@@ -24,7 +24,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
       )
       .join('\n\n');
 
-    const summary = `CloudCostIQ - FinOps Reservation & Savings Plan Benchmarks Report\nCurated by Mani Ravindran (maniravindran.com)\nOverall Maturity Score: ${maturity.score}/100 (${maturity.grade})\n\n${text}`;
+    const summary = `CloudCostIQ - FinOps Reservation & Savings Plan Benchmarks Report\nCurated by Mani Ravindran (ravindran.in)\nOverall Maturity Score: ${maturity.score}/100 (${maturity.grade})\n\n${text}`;
     navigator.clipboard.writeText(summary);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

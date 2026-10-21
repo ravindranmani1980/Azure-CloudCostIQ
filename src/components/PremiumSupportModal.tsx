@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ExternalLink, Mail, CheckCircle2, ShieldCheck, Award, Calendar, Sparkles, Send } from 'lucide-react';
+import { X, ExternalLink, Mail, CheckCircle2, Check, ShieldCheck, Award, Calendar, Sparkles, Send } from 'lucide-react';
 import { ConsultationRequest } from '../types/cost';
 
 interface PremiumSupportModalProps {
@@ -84,12 +84,12 @@ export const PremiumSupportModal: React.FC<PremiumSupportModalProps> = ({
 
             <div className="flex flex-wrap items-center gap-4 text-xs pt-1">
               <a
-                href="https://maniravindran.com"
+                href="https://ravindran.in"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 underline underline-offset-2"
               >
-                <span>maniravindran.com</span>
+                <span>ravindran.in</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
 

@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
                   CloudCostIQ
                 </span>
                 <span className="block text-[11px] text-slate-400 font-medium tracking-tight">
-                  by Mani Ravindran
+                  by Mani Ravindran · <span className="text-emerald-400 font-semibold">ravindran.in</span>
                 </span>
               </div>
             </button>
@@ -68,8 +68,18 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          {/* Zone 3: Primary Action CTA */}
+          {/* Zone 3: Primary Action CTA & Direct Website Link */}
           <div className="flex items-center gap-3 shrink-0">
+            <a
+              href="https://ravindran.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:flex items-center gap-1 text-xs font-semibold text-slate-300 hover:text-emerald-400 px-2.5 py-1.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors whitespace-nowrap shrink-0"
+            >
+              <span>ravindran.in</span>
+              <span className="text-[10px] text-emerald-400">↗</span>
+            </a>
+
             <button
               onClick={onOpenPremiumSupport}
               className="px-3.5 py-2 text-xs font-semibold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 rounded-lg shadow-sm shadow-emerald-500/20 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer active:scale-95"

@@ -323,8 +323,17 @@ export default function App() {
                     Cloud Cost & FinOps Intelligence
                   </span>
                   <span className="text-slate-600" aria-hidden="true">·</span>
-                  <span className="text-xs text-slate-300">
-                    Curated by <strong className="text-white">Mani Ravindran</strong>
+                  <span className="text-xs text-slate-300 flex items-center gap-1.5">
+                    <span>Curated by <strong className="text-white">Mani Ravindran</strong></span>
+                    <span aria-hidden="true">·</span>
+                    <a
+                      href="https://ravindran.in"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2"
+                    >
+                      ravindran.in ↗
+                    </a>
                   </span>
                 </div>
 
@@ -533,12 +542,12 @@ export default function App() {
                   </p>
                   <div className="flex items-center gap-4 text-xs pt-2">
                     <a
-                      href="https://maniravindran.com"
+                      href="https://ravindran.in"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 underline underline-offset-2"
                     >
-                      <span>Visit Website (maniravindran.com)</span>
+                      <span>Visit Website (ravindran.in)</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                     <span className="text-slate-600" aria-hidden="true">·</span>
@@ -622,12 +631,12 @@ export default function App() {
             <span>Created by <strong className="text-slate-300">Mani Ravindran</strong></span>
             <span aria-hidden="true">·</span>
             <a
-              href="https://maniravindran.com"
+              href="https://ravindran.in"
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-400 hover:underline"
             >
-              maniravindran.com
+              ravindran.in
             </a>
           </div>
 
