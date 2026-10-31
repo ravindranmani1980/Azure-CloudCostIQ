@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, CheckCircle2, Plus, Sparkles, AlertCircle, ArrowUpRight, Undo2, Trash2 } from 'lucide-react';
+import { Check, Plus, Sparkles, Undo2, Trash2 } from 'lucide-react';
 import { OptimizationRecommendation, OptimizationCategory, CloudProvider } from '../types/cost';
 import { formatCurrency } from '../utils/costCalculations';
 
@@ -95,51 +95,57 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner: Total Savings Summary & Quick Filters */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 border border-slate-800 rounded-xl p-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">💰📈</span>
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Identified Budget Optimization Opportunities
-              </h2>
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-lg bg-[#081420] text-[#5FD3BF] flex items-center justify-center text-lg shrink-0 font-mono">
+              📈
             </div>
-            <p className="text-xs text-slate-400 max-w-2xl">
-              Actionable FinOps recommendations across compute, reservations, idle zombie resources, and egress. Click "Apply" to simulate realized savings.
-            </p>
+            <div>
+              <span className="rm-kicker">02 / BUDGET OPTIMIZATION &amp; WASTE ELIMINATION</span>
+              <h2 className="text-xl font-bold text-[#16232F] font-serif flex items-center gap-2">
+                <span>Identified Budget Optimization Opportunities</span>
+                <span>💰📈</span>
+              </h2>
+              <p className="text-xs text-slate-600 max-w-2xl mt-1">
+                Actionable FinOps recommendations across compute, reservations, idle zombie resources, and egress evaluated by <strong>Mani Ravindran</strong>. Click &quot;Apply&quot; to simulate realized savings.
+              </p>
 
-            <div className="flex flex-wrap items-center gap-4 mt-4 text-xs font-mono">
-              <div className="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/80">
-                <span className="text-slate-400">Available Savings: </span>
-                <span className="text-emerald-400 font-bold tabular-nums">
-                  {formatCurrency(totalOpenSavingsMonthly)}/mo
-                </span>
-                <span className="text-slate-500"> ({formatCurrency(totalOpenSavingsMonthly * 12, true)}/yr)</span>
-              </div>
+              <div className="flex flex-wrap items-center gap-3 mt-4 text-xs font-mono">
+                <div className="bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+                  <span className="text-slate-600">Available Savings: </span>
+                  <span className="text-emerald-700 font-bold tabular-nums">
+                    {formatCurrency(totalOpenSavingsMonthly)}/mo
+                  </span>
+                  <span className="text-slate-500"> ({formatCurrency(totalOpenSavingsMonthly * 12, true)}/yr)</span>
+                </div>
 
-              <div className="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/80">
-                <span className="text-slate-400">Realized / Applied: </span>
-                <span className="text-sky-400 font-bold tabular-nums">
-                  {formatCurrency(totalAppliedSavingsMonthly)}/mo
-                </span>
-                <span className="text-slate-500"> ({appliedRecs.length} implemented)</span>
+                <div className="bg-[#F3F5F1] px-3 py-1.5 rounded-lg border border-slate-200">
+                  <span className="text-slate-600">Realized / Applied: </span>
+                  <span className="text-[#3E6E86] font-bold tabular-nums">
+                    {formatCurrency(totalAppliedSavingsMonthly)}/mo
+                  </span>
+                  <span className="text-slate-500"> ({appliedRecs.length} implemented)</span>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
+              type="button"
               onClick={handleRunAiAnalysis}
               disabled={aiAnalysisRunning}
-              className="px-3.5 py-2 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 text-xs font-semibold text-white bg-[#081420] hover:bg-slate-800 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[#5FD3BF]" />
               <span>{aiAnalysisRunning ? 'Synthesizing...' : 'AI Optimization Copilot 💡'}</span>
             </button>
 
             <button
+              type="button"
               onClick={() => setShowAddModal(true)}
-              className="px-3.5 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Custom Finding</span>
@@ -149,29 +155,31 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
 
         {/* AI Copilot Insights Drawer */}
         {aiReport && (
-          <div className="mt-4 p-4 rounded-lg bg-emerald-950/20 border border-emerald-800/50 text-xs text-slate-200">
+          <div className="mt-5 p-4 rounded-lg bg-[#0D1C2D] border border-[#3E6E86]/45 text-xs text-[#EEF3F1]">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
+              <span className="font-semibold text-[#5FD3BF] font-mono flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Mani Ravindran's FinOps Execution Runbook</span>
+                <span>Mani Ravindran&apos;s FinOps Execution Runbook</span>
               </span>
               <button
+                type="button"
                 onClick={() => setAiReport(null)}
-                className="text-slate-400 hover:text-white text-[11px]"
+                className="text-[#A9B7BF] hover:text-white text-[11px] cursor-pointer"
               >
                 Close
               </button>
             </div>
-            <pre className="font-sans whitespace-pre-wrap leading-relaxed text-slate-300">
+            <pre className="font-sans whitespace-pre-wrap leading-relaxed text-[#C6D1D6]">
               {aiReport}
             </pre>
-            <div className="mt-3 pt-2 border-t border-emerald-900/40 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400">
+            <div className="mt-3 pt-2 border-t border-[#C9D3D9]/15 flex items-center justify-between">
+              <span className="text-[11px] text-[#A9B7BF]">
                 Need hands-on enterprise migration assistance?
               </span>
               <button
+                type="button"
                 onClick={onOpenPremiumSupport}
-                className="text-emerald-400 hover:text-emerald-300 font-semibold text-[11px] underline cursor-pointer"
+                className="text-[#EBC385] hover:text-[#D79A45] font-mono font-semibold text-[11px] underline cursor-pointer"
               >
                 Contact Mani Ravindran for 1-on-1 Consultation →
               </button>
@@ -181,16 +189,17 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-slate-800">
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1 p-1 bg-white border border-slate-200 rounded-lg overflow-x-auto no-scrollbar w-full sm:w-auto">
           {categories.map((cat) => (
             <button
               key={cat}
+              type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-slate-800 text-emerald-400'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                  ? 'bg-[#081420] text-[#EBC385]'
+                  : 'text-slate-600 hover:text-[#16232F] hover:bg-slate-100'
               }`}
             >
               {cat}
@@ -199,11 +208,11 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto">
-          <span className="text-xs text-slate-400">Risk:</span>
+          <span className="text-xs font-medium text-slate-600">Risk:</span>
           <select
             value={selectedRisk}
             onChange={(e) => setSelectedRisk(e.target.value)}
-            className="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer"
+            className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-[#16232F] font-medium focus:outline-none focus:border-[#2BB5A0] cursor-pointer"
           >
             <option value="All">All Risks</option>
             <option value="Low">Low Risk</option>
@@ -222,46 +231,51 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
           return (
             <div
               key={rec.id}
-              className={`bg-slate-900/90 border rounded-xl p-5 transition-all ${
+              className={`bg-white border rounded-xl p-5 transition-all shadow-xs ${
                 isApplied
-                  ? 'border-emerald-800/60 bg-emerald-950/10'
+                  ? 'border-emerald-300 bg-emerald-50/40'
                   : isDismissed
-                  ? 'border-slate-800/40 opacity-50'
-                  : 'border-slate-800 hover:border-slate-700'
+                  ? 'border-slate-200 opacity-50'
+                  : 'border-slate-200 hover:border-emerald-400'
               }`}
             >
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 {/* Left: Info */}
                 <div className="flex items-start gap-3.5 flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-xl shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-[#F3F5F1] border border-slate-200 flex items-center justify-center text-xl shrink-0">
                     <span>{rec.emoji}</span>
                   </div>
 
-                  <div className="space-y-1.5 flex-1">
+                  <div className="space-y-2 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm font-bold text-white tracking-tight">
+                      <h3 className="text-sm font-bold text-[#16232F] tracking-tight">
                         {rec.title}
                       </h3>
                       {isApplied && (
-                        <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded">
-                          Applied & Realized ✨
+                        <span className="text-[11px] font-mono font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded">
+                          PASS · Applied &amp; Realized ✨
                         </span>
                       )}
                     </div>
 
-                    <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                    <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
                       {rec.description}
                     </p>
 
-                    {/* Unboxed Metadata with Typographic Separators */}
-                    <div className="text-[11px] text-slate-400 flex flex-wrap items-center gap-2 pt-1 font-mono">
-                      <span>{rec.provider}</span>
+                    {/* Postrix-style Technical Metadata Box */}
+                    <div className="p-2.5 rounded-md bg-[#F3F5F1] border border-slate-200/80 text-[11px] text-slate-600 flex flex-wrap items-center gap-2 font-mono">
+                      <span className="font-semibold text-[#16232F]">{rec.provider}</span>
                       <span aria-hidden="true">·</span>
                       <span>{rec.service}</span>
                       <span aria-hidden="true">·</span>
-                      <span className="text-slate-300">{rec.targetResource}</span>
+                      <span className="text-[#3E6E86] font-medium">{rec.targetResource}</span>
                       <span aria-hidden="true">·</span>
-                      <span>Risk: <strong className={rec.riskLevel === 'Low' ? 'text-emerald-400' : 'text-amber-400'}>{rec.riskLevel}</strong></span>
+                      <span>
+                        Risk:{' '}
+                        <strong className={rec.riskLevel === 'Low' ? 'text-emerald-700' : 'text-amber-700'}>
+                          {rec.riskLevel}
+                        </strong>
+                      </span>
                       <span aria-hidden="true">·</span>
                       <span>Effort: {rec.effort}</span>
                     </div>
@@ -269,10 +283,10 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                 </div>
 
                 {/* Right: Numbers & Action Button */}
-                <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-800">
+                <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
                   <div className="text-left md:text-right">
-                    <div className="text-xs text-slate-400">Monthly Savings</div>
-                    <div className="text-lg font-bold font-mono tabular-nums text-emerald-400">
+                    <div className="text-[11px] text-slate-500 font-mono uppercase">Monthly Savings</div>
+                    <div className="text-lg font-bold font-mono tabular-nums text-emerald-700">
                       +{formatCurrency(rec.estimatedSavingsMonthly)}
                     </div>
                     <div className="text-[11px] font-mono text-slate-500">
@@ -283,8 +297,9 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                   <div className="flex items-center gap-2">
                     {isApplied ? (
                       <button
+                        type="button"
                         onClick={() => onToggleStatus(rec.id, 'open')}
-                        className="px-3 py-1.5 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
                         title="Revert to open status"
                       >
                         <Undo2 className="w-3.5 h-3.5" />
@@ -292,18 +307,20 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                       </button>
                     ) : (
                       <button
+                        type="button"
                         onClick={() => onToggleStatus(rec.id, 'applied')}
-                        className="px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-all shadow-sm cursor-pointer active:scale-95"
+                        className="px-3.5 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                       >
-                        <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
                         <span>Apply Optimization</span>
                       </button>
                     )}
 
                     {!isDismissed && (
                       <button
+                        type="button"
                         onClick={() => onToggleStatus(rec.id, 'dismissed')}
-                        className="p-1.5 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                         title="Dismiss recommendation"
                         aria-label="Dismiss"
                       >
@@ -320,19 +337,20 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
 
       {/* Modal: Add Custom Finding */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl max-w-lg w-full p-6 shadow-2xl">
+            <span className="rm-kicker">CUSTOM FINOPS FINDING</span>
+            <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
               <span>Log Cloud Optimization Finding</span>
               <span>💡</span>
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-slate-600 mb-4">
               Add a discovered optimization opportunity to track against your monthly infrastructure budget.
             </p>
 
             <form onSubmit={handleCreateRecommendation} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Title / Action
                 </label>
                 <input
@@ -340,20 +358,20 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                   placeholder="e.g. Delete unused Cloud SQL replicas in staging"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-sm text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Cloud Provider
                   </label>
                   <select
                     value={newProvider}
                     onChange={(e) => setNewProvider(e.target.value as CloudProvider)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                   >
                     <option value="AWS">AWS</option>
                     <option value="GCP">GCP</option>
@@ -363,13 +381,13 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Category
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value as OptimizationCategory)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                   >
                     <option value="Compute Downsizing">Compute Downsizing</option>
                     <option value="Reservation Commitment">Reservation Commitment</option>
@@ -383,7 +401,7 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Service / Product
                   </label>
                   <input
@@ -391,49 +409,49 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                     placeholder="e.g. Amazon Aurora / Cloud SQL"
                     value={newService}
                     onChange={(e) => setNewService(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Est. Monthly Savings ($)
                   </label>
                   <input
                     type="number"
                     value={newMonthlySavings}
                     onChange={(e) => setNewMonthlySavings(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Description & Impact
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Description &amp; Impact
                 </label>
                 <textarea
                   rows={2}
                   placeholder="Detail the utilization trigger and remediation steps..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-[#16232F] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg transition-colors cursor-pointer"
                 >
                   Save Finding
                 </button>

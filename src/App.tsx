@@ -38,7 +38,7 @@ import {
   formatCurrency,
 } from './utils/costCalculations';
 
-import { Sparkles, ArrowRight, ShieldCheck, Zap, ExternalLink, Mail, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, Zap, ExternalLink, Mail, Globe } from 'lucide-react';
 
 export default function App() {
   // Navigation State
@@ -57,7 +57,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : INITIAL_RECOMMENDATIONS;
   });
 
-  const [benchmarks, setBenchmarks] = useState<BenchmarkReportItem[]>(() => {
+  const [benchmarks] = useState<BenchmarkReportItem[]>(() => {
     const saved = localStorage.getItem('cloudcost_benchmarks');
     return saved ? JSON.parse(saved) : INITIAL_BENCHMARKS;
   });
@@ -282,8 +282,11 @@ export default function App() {
     showToast(`Updated ${id.toUpperCase()} API configuration.`);
   };
 
+  const appliedRecsCount = recommendations.filter((r) => r.status === 'applied').length;
+  const openRecsCount = recommendations.filter((r) => r.status === 'open').length;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F3F5F1] text-[#16232F] flex flex-col font-sans">
       {/* Header */}
       <Header
         activeTab={activeTab}
@@ -292,113 +295,225 @@ export default function App() {
         anomalyCount={activeAlerts.length}
       />
 
+      {/* Secondary Dark Navy Telemetry Bar */}
+      <LiveBillingSyncBar
+        providers={providers}
+        onTriggerSync={handleTriggerSync}
+        isSyncing={isSyncing}
+        onOpenApiTab={() => setActiveTab('api-sync')}
+        lastSyncTimestamp={lastSyncTime}
+      />
+
       {/* Toast Notification Container */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-slate-900 border border-emerald-500/80 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 animate-bounce">
-          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span className="font-medium">{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 max-w-md bg-[#081420] border border-[#5FD3BF] text-[#EEF3F1] text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5">
+          <Sparkles className="w-4 h-4 text-[#5FD3BF] shrink-0" />
+          <span className="font-medium font-mono">{toastMessage}</span>
         </div>
       )}
 
       {/* Main Workspace Viewport */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Real-Time Cloud Billing Live Bar */}
-        <LiveBillingSyncBar
-          providers={providers}
-          onTriggerSync={handleTriggerSync}
-          isSyncing={isSyncing}
-          onOpenApiTab={() => setActiveTab('api-sync')}
-          lastSyncTimestamp={lastSyncTime}
-        />
-
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-7 space-y-7">
         {/* Tab 1: Overview */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Hero Welcome Banner with Advisor Credit */}
-            <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden">
-              <div className="relative z-10 max-w-3xl space-y-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-2xl leading-none">💰📈</span>
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
-                    Cloud Cost & FinOps Intelligence
-                  </span>
-                  <span className="text-slate-600" aria-hidden="true">·</span>
-                  <span className="text-xs text-slate-300 flex items-center gap-1.5">
-                    <span>Curated by <strong className="text-white">Mani Ravindran</strong></span>
-                    <span aria-hidden="true">·</span>
-                    <a
-                      href="https://ravindran.in"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2"
-                    >
-                      ravindran.in ↗
-                    </a>
-                  </span>
+          <div className="space-y-7">
+            {/* Postrix Dark Navy Hero Panel (.xh-panel) */}
+            <section className="xh-panel">
+              <div className="xh-kicker">
+                <span className="k">💰📈 CLOUD COST &amp; FINOPS INTELLIGENCE · CURATED BY MANI RAVINDRAN</span>
+                <span className="tag">FinOps Maturity v2.6 · RI / SP / CUD · Real-Time Billing</span>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-[#C9D3D9]/12">
+                <div className="flex items-center gap-3.5">
+                  <div className="rm-mono-mark !w-11 !h-11 !text-base" aria-hidden="true">
+                    RM
+                  </div>
+                  <div>
+                    <h1 className="text-base sm:text-lg font-semibold text-[#EEF3F1] leading-snug m-0 font-sans">
+                      Maximize Multi-Cloud Savings &amp; Benchmark Against Top Quartile Peers
+                      <span className="block font-mono font-normal text-xs text-[#A9B7BF] mt-0.5">
+                        Active Target:{' '}
+                        <a
+                          href="https://ravindran.in"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#5FD3BF] hover:underline"
+                        >
+                          ravindran.in ↗
+                        </a>{' '}
+                        · AWS, GCP &amp; Azure · Potential Savings: {formatCurrency(savings.monthly)}/mo
+                      </span>
+                    </h1>
+                  </div>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  Maximize Multi-Cloud Savings & Benchmark Against Top Quartile Peers
-                </h1>
-
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
-                  Automated tracking of monthly expenses across AWS, GCP, and Azure. Identify zombie idle assets, benchmark your 1-year and 3-year commitment plans against FinOps standards, and intercept surprise billing spikes in real time.
-                </p>
-
-                <div className="flex flex-wrap items-center gap-3 pt-2">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <button
+                    type="button"
+                    onClick={() => setActiveTab('benchmarks')}
+                    className="xh-btn cursor-pointer"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#5FD3BF]" />
+                    <span>Reservation Benchmarks Report</span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => setActiveTab('optimization')}
-                    className="px-4 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                    className="xh-btn primary cursor-pointer"
                   >
                     <span>View {savings.count} Optimization Areas ({formatCurrency(savings.monthly)}/mo)</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
 
                   <button
-                    onClick={() => setActiveTab('benchmarks')}
-                    className="px-4 py-2 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Reservation Benchmarks Report</span>
-                  </button>
-
-                  <button
+                    type="button"
                     onClick={() => setIsPremiumModalOpen(true)}
-                    className="px-4 py-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/40 hover:bg-emerald-900/40 border border-emerald-800/60 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="xh-btn cursor-pointer"
                   >
                     <span>Mani Ravindran Advisory Access 💼</span>
                   </button>
                 </div>
               </div>
-            </div>
 
-            {/* 4 Primary KPI Metric Cards */}
-            <MetricCards
-              currentSpend={mom.currentSpend}
-              previousSpend={mom.previousSpend}
-              percentageChange={mom.percentageChange}
-              potentialSavingsMonthly={savings.monthly}
-              potentialSavingsAnnual={savings.annual}
-              openRecommendationsCount={savings.count}
-              commitmentCoveragePct={coverage.coveragePercentage}
-              activeAnomaliesCount={activeAlerts.length}
-              criticalAnomaliesCount={criticalAlerts.length}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-            />
+              <div className="pt-5">
+                <MetricCards
+                  currentSpend={mom.currentSpend}
+                  previousSpend={mom.previousSpend}
+                  percentageChange={mom.percentageChange}
+                  potentialSavingsMonthly={savings.monthly}
+                  potentialSavingsAnnual={savings.annual}
+                  openRecommendationsCount={savings.count}
+                  commitmentCoveragePct={coverage.coveragePercentage}
+                  activeAnomaliesCount={activeAlerts.length}
+                  criticalAnomaliesCount={criticalAlerts.length}
+                  onNavigateTab={(tab) => setActiveTab(tab)}
+                />
+              </div>
+            </section>
+
+            {/* Postrix White Compliance & Posture Section */}
+            <section className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-5">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-lg bg-[#081420] text-[#5FD3BF] flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="rm-kicker">01 / FINOPS COMMITMENT &amp; COST OPTIMIZATION POSTURE</span>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h2 className="text-xl font-bold text-[#16232F] font-serif">
+                        Cloud Cost Posture — 6-Point Industry Benchmark &amp; Savings Matrix
+                      </h2>
+                      <span className="px-2.5 py-0.5 text-xs font-mono font-medium rounded border border-emerald-300 bg-emerald-50 text-emerald-800">
+                        Target: ravindran.in
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Live commitment coverage progress bar and condition-by-condition FinOps benchmark checklist evaluated by <strong>Mani Ravindran</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                  <div className="inline-flex items-center p-1 bg-[#F3F5F1] border border-slate-200 rounded-lg text-xs font-medium">
+                    <span className="px-3 py-1 rounded-md bg-white text-[#16232F] shadow-xs font-semibold">
+                      All {recommendations.length} Findings
+                    </span>
+                    <span className="px-3 py-1 text-slate-600">
+                      Applied ({appliedRecsCount})
+                    </span>
+                    <span className="px-3 py-1 text-slate-600">
+                      Open ({openRecsCount})
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('benchmarks')}
+                    className="px-3.5 py-2 text-xs font-semibold text-[#16232F] bg-white hover:bg-slate-50 border border-slate-300 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>Inspect Benchmarks</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Progress Bar Box */}
+              <div className="p-4 rounded-xl bg-[#F3F5F1]/60 border border-slate-200/90 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                  <div className="flex items-center gap-2 text-slate-700">
+                    <Globe className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Evaluated Endpoint: <strong className="text-[#16232F]">ravindran.in</strong></span>
+                    <span aria-hidden="true">·</span>
+                    <span>Commitment Coverage: <strong className="text-[#16232F]">{coverage.coveragePercentage}%</strong> (RI + SP / CUD)</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-700 font-semibold">{appliedRecsCount} Realized</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="text-slate-600">{openRecsCount} Open Actions</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="text-[#16232F] font-semibold">+{formatCurrency(savings.monthly)}/mo Potential</span>
+                  </div>
+                </div>
+
+                <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-[#2BB5A0] h-full rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(100, Math.max(25, coverage.coveragePercentage + appliedRecsCount * 6))}%` }}
+                  />
+                </div>
+
+                {/* Mini 6-Card Benchmark Strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-1">
+                  {benchmarks.map((b, i) => {
+                    const isPass = b.higherIsBetter
+                      ? b.userValue >= b.industryMedian
+                      : b.userValue <= b.industryMedian;
+                    return (
+                      <div
+                        key={b.id}
+                        onClick={() => setActiveTab('benchmarks')}
+                        className="p-2.5 rounded-lg bg-white border border-slate-200/90 hover:border-emerald-400 transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                          <span>FINOPS-0{i + 1}</span>
+                          <span className={isPass ? 'text-emerald-600 font-bold' : 'text-[#D79A45] font-bold'}>
+                            {isPass ? 'PASS' : 'GAP'}
+                          </span>
+                        </div>
+                        <div className="text-xs font-bold text-[#16232F] truncate" title={b.metricName}>
+                          {b.emoji} {b.metricName}
+                        </div>
+                        <div className="text-[11px] font-mono font-semibold text-emerald-700 mt-1">
+                          {b.userValue}{b.unit} <span className="text-slate-400 font-normal">/ {b.industryTopQuartile}{b.unit}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
 
             {/* 2-Column Split: Top Savings Quick Wins & Active Spikes */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Left: Top 3 High-Yield Savings Actions */}
-              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
+              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <span>Top Budget Optimization Opportunities</span>
-                      <span>💡</span>
-                    </h3>
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <div>
+                      <span className="rm-kicker">02 / PRIORITY SAVINGS QUEUE</span>
+                      <h3 className="text-base font-bold text-[#16232F] font-serif flex items-center gap-2">
+                        <span>Top Budget Optimization Opportunities</span>
+                        <span>💡</span>
+                      </h3>
+                    </div>
                     <button
+                      type="button"
                       onClick={() => setActiveTab('optimization')}
-                      className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+                      className="text-xs text-emerald-700 hover:text-emerald-800 font-mono font-semibold cursor-pointer"
                     >
                       View All ({recommendations.length}) →
                     </button>
@@ -410,30 +525,31 @@ export default function App() {
                       return (
                         <div
                           key={rec.id}
-                          className="p-3.5 rounded-lg bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between gap-3"
+                          className="p-3.5 rounded-lg bg-[#F3F5F1] border border-slate-200/90 hover:border-emerald-400 transition-colors flex items-center justify-between gap-3"
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-lg">{rec.emoji}</span>
                             <div>
-                              <h4 className="text-xs font-bold text-white tracking-tight">
+                              <h4 className="text-xs font-bold text-[#16232F] tracking-tight">
                                 {rec.title}
                               </h4>
-                              <div className="text-[11px] text-slate-400 font-mono">
+                              <div className="text-[11px] text-slate-600 font-mono">
                                 {rec.provider} · {rec.category} · Effort: {rec.effort}
                               </div>
                             </div>
                           </div>
 
                           <div className="text-right shrink-0">
-                            <div className="text-xs font-bold font-mono text-emerald-400">
+                            <div className="text-xs font-bold font-mono text-emerald-700">
                               +{formatCurrency(rec.estimatedSavingsMonthly)}/mo
                             </div>
                             <button
+                              type="button"
                               onClick={() => handleToggleRecStatus(rec.id, isApplied ? 'open' : 'applied')}
-                              className={`mt-1 px-2.5 py-0.5 text-[11px] font-semibold rounded transition-colors cursor-pointer ${
+                              className={`mt-1 px-2.5 py-0.5 text-[11px] font-mono font-semibold rounded transition-colors cursor-pointer ${
                                 isApplied
-                                  ? 'bg-emerald-950 border border-emerald-800 text-emerald-300'
-                                  : 'bg-emerald-400 text-slate-950 hover:bg-emerald-300'
+                                  ? 'bg-emerald-100 border border-emerald-300 text-emerald-800'
+                                  : 'bg-[#2BB5A0] text-[#04211B] hover:bg-[#5FD3BF]'
                               }`}
                             >
                               {isApplied ? 'Applied ✓' : 'Apply'}
@@ -445,25 +561,29 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
                   <span>Implementing these 3 items saves:</span>
-                  <span className="font-mono font-bold text-emerald-400">
+                  <span className="font-mono font-bold text-emerald-700">
                     +{formatCurrency(recommendations.slice(0, 3).reduce((sum, r) => sum + r.estimatedSavingsMonthly, 0))}/mo
                   </span>
                 </div>
               </div>
 
               {/* Right: Active Spikes & Benchmark Summary */}
-              <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
+              <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <span>Real-Time Usage Anomaly Alerts</span>
-                      <span>⚡</span>
-                    </h3>
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                    <div>
+                      <span className="rm-kicker">03 / REAL-TIME SPIKE TELEMETRY</span>
+                      <h3 className="text-base font-bold text-[#16232F] font-serif flex items-center gap-2">
+                        <span>Real-Time Usage Anomaly Alerts</span>
+                        <span>⚡</span>
+                      </h3>
+                    </div>
                     <button
+                      type="button"
                       onClick={() => setActiveTab('alerts')}
-                      className="text-xs text-rose-400 hover:text-rose-300 font-semibold cursor-pointer"
+                      className="text-xs text-red-700 hover:text-red-800 font-mono font-semibold cursor-pointer"
                     >
                       Alert Center ({activeAlerts.length}) →
                     </button>
@@ -473,29 +593,29 @@ export default function App() {
                     {alerts.slice(0, 3).map((a) => (
                       <div
                         key={a.id}
-                        className={`p-3 rounded-lg border flex items-center justify-between gap-3 ${
+                        className={`p-3.5 rounded-lg border flex items-center justify-between gap-3 ${
                           a.severity === 'critical'
-                            ? 'bg-rose-950/20 border-rose-800/60'
-                            : 'bg-amber-950/20 border-amber-800/60'
+                            ? 'bg-red-50/70 border-red-200'
+                            : 'bg-amber-50/70 border-amber-200'
                         }`}
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-base">{a.emoji}</span>
                           <div>
-                            <div className="text-xs font-bold text-white">
+                            <div className="text-xs font-bold text-[#16232F]">
                               {a.service}
                             </div>
-                            <div className="text-[11px] text-slate-400 truncate max-w-xs font-mono">
+                            <div className="text-[11px] text-slate-600 truncate max-w-xs font-mono">
                               {a.provider} · {a.rootCause}
                             </div>
                           </div>
                         </div>
 
                         <div className="text-right shrink-0">
-                          <div className="text-xs font-bold font-mono text-rose-400">
+                          <div className="text-xs font-bold font-mono text-red-700">
                             +{a.percentageIncrease}%
                           </div>
-                          <div className="text-[10px] text-slate-400 font-mono">
+                          <div className="text-[10px] text-slate-600 font-mono">
                             {formatCurrency(a.currentSpike)}
                           </div>
                         </div>
@@ -504,17 +624,19 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
                   <button
+                    type="button"
                     onClick={handleSimulateSpike}
-                    className="text-xs font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-mono font-semibold text-red-700 hover:text-red-800 flex items-center gap-1 cursor-pointer"
                   >
                     <Zap className="w-3.5 h-3.5" />
                     <span>Trigger Anomaly Test Spike ⚡</span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveTab('api-sync')}
-                    className="text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="text-xs font-mono text-emerald-700 hover:underline cursor-pointer"
                   >
                     Stream Status: Active (3 Clouds)
                   </button>
@@ -523,39 +645,39 @@ export default function App() {
             </div>
 
             {/* FinOps Advisor Spotlight: Mani Ravindran */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-emerald-950/50 shrink-0">
-                  MR
+                <div className="rm-mono-mark !w-14 !h-14 !text-lg shrink-0">
+                  RM
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-white">
-                      FinOps Architecture & Cost Optimization by Mani Ravindran
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-base font-bold text-[#16232F] font-serif">
+                      FinOps Architecture &amp; Cost Optimization by Mani Ravindran
                     </h3>
-                    <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800 text-emerald-300 font-medium">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 text-emerald-800 font-semibold">
                       Enterprise Advisor
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                  <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
                     Looking to negotiate an AWS EDP or Google Cloud Committed Use Discount? Need tailored Kubernetes cost allocation or automated anomaly response? Connect directly with Mani Ravindran.
                   </p>
-                  <div className="flex items-center gap-4 text-xs pt-2">
+                  <div className="flex flex-wrap items-center gap-4 text-xs pt-2 font-mono">
                     <a
                       href="https://ravindran.in"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 underline underline-offset-2"
+                      className="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1 underline underline-offset-4"
                     >
                       <span>Visit Website (ravindran.in)</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
-                    <span className="text-slate-600" aria-hidden="true">·</span>
+                    <span className="text-slate-400" aria-hidden="true">·</span>
                     <a
                       href="mailto:MANI.RAVINDRAN@gmail.com"
-                      className="text-slate-300 hover:text-emerald-300 flex items-center gap-1 font-mono"
+                      className="text-slate-700 hover:text-emerald-700 flex items-center gap-1"
                     >
-                      <Mail className="w-3 h-3 text-emerald-400" />
+                      <Mail className="w-3 h-3 text-[#2BB5A0]" />
                       <span>MANI.RAVINDRAN@gmail.com</span>
                     </a>
                   </div>
@@ -563,8 +685,9 @@ export default function App() {
               </div>
 
               <button
+                type="button"
                 onClick={() => setIsPremiumModalOpen(true)}
-                className="px-5 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 rounded-lg shadow-sm whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95"
+                className="px-5 py-2.5 text-xs font-bold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg shadow-xs whitespace-nowrap shrink-0 transition-all cursor-pointer active:scale-95"
               >
                 Access Premium Support 🚀
               </button>
@@ -622,34 +745,46 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-6 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-400">CloudCostIQ</span>
-            <span aria-hidden="true">·</span>
-            <span>Created by <strong className="text-slate-300">Mani Ravindran</strong></span>
-            <span aria-hidden="true">·</span>
+      {/* Postrix Dark Navy Footer */}
+      <footer className="bg-[#081420] text-[#B9C4CC] border-t border-[#3E6E86]/35 px-4 sm:px-6 py-6 mt-auto no-print">
+        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="rm-mono-mark !w-6 !h-6 !text-[11px]" aria-hidden="true">
+              RM
+            </span>
+            <span>
+              <strong className="font-serif text-sm font-semibold text-[#F3F5F1]">
+                Maniq <span className="text-[#3E6E86] font-normal">|</span> <span className="text-[#D79A45]">CloudCost IQ</span>
+              </strong>{' '}
+              — Cloud Cost Savings Analyzer &amp; FinOps Benchmarks Platform
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <span>
+              Author: <strong className="font-medium text-[#F3F5F1]">Mani Ravindran</strong>
+            </span>
+            <span className="text-[#3E6E86]" aria-hidden="true">·</span>
             <a
               href="https://ravindran.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-400 hover:underline"
+              className="font-mono text-[#5FD3BF] hover:text-[#EBC385] underline underline-offset-4 transition-colors"
             >
               ravindran.in
             </a>
-          </div>
-
-          <div className="flex items-center gap-4">
+            <span className="text-[#3E6E86]" aria-hidden="true">·</span>
             <a
               href="mailto:MANI.RAVINDRAN@gmail.com"
-              className="hover:text-slate-300 transition-colors"
+              className="font-mono text-[#B9C4CC] hover:text-[#5FD3BF] transition-colors"
             >
               Contact Support
             </a>
+            <span className="text-[#3E6E86]" aria-hidden="true">·</span>
             <button
+              type="button"
               onClick={() => setIsPremiumModalOpen(true)}
-              className="text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+              className="font-mono font-medium text-[#EBC385] hover:text-[#D79A45] underline underline-offset-4 transition-colors cursor-pointer"
             >
               Premium Support Access 💼
             </button>

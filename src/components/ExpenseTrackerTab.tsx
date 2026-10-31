@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Download, Filter, Plus, TrendingUp, DollarSign } from 'lucide-react';
-import { MonthlyExpense, CloudProvider } from '../types/cost';
+import { Download, Plus } from 'lucide-react';
+import { MonthlyExpense } from '../types/cost';
 import { formatCurrency } from '../utils/costCalculations';
 
 interface ExpenseTrackerTabProps {
@@ -28,14 +28,16 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
   const latestExpense = expenses[expenses.length - 1];
 
   // Category totals for latest month
-  const categoryData = latestExpense ? [
-    { name: 'Compute (EC2 / GCE / VMs)', amount: latestExpense.categories.compute, emoji: '💻', color: 'bg-emerald-500' },
-    { name: 'Storage (S3 / GCS / EBS)', amount: latestExpense.categories.storage, emoji: '📦', color: 'bg-sky-500' },
-    { name: 'Networking & Egress', amount: latestExpense.categories.networking, emoji: '🌐', color: 'bg-amber-500' },
-    { name: 'Databases (RDS / BigQuery / Azure SQL)', amount: latestExpense.categories.database, emoji: '🗄️', color: 'bg-indigo-500' },
-    { name: 'AI & Machine Learning (OpenAI / TPUs)', amount: latestExpense.categories.aiMl, emoji: '🤖', color: 'bg-purple-500' },
-    { name: 'Other Support & Management', amount: latestExpense.categories.other, emoji: '⚙️', color: 'bg-slate-500' },
-  ] : [];
+  const categoryData = latestExpense
+    ? [
+        { name: 'Compute (EC2 / GCE / VMs)', amount: latestExpense.categories.compute, emoji: '💻', color: 'bg-[#2BB5A0]' },
+        { name: 'Storage (S3 / GCS / EBS)', amount: latestExpense.categories.storage, emoji: '📦', color: 'bg-[#3E6E86]' },
+        { name: 'Networking & Egress', amount: latestExpense.categories.networking, emoji: '🌐', color: 'bg-[#D79A45]' },
+        { name: 'Databases (RDS / BigQuery / Azure SQL)', amount: latestExpense.categories.database, emoji: '🗄️', color: 'bg-[#0E2238]' },
+        { name: 'AI & Machine Learning (OpenAI / TPUs)', amount: latestExpense.categories.aiMl, emoji: '🤖', color: 'bg-emerald-600' },
+        { name: 'Other Support & Management', amount: latestExpense.categories.other, emoji: '⚙️', color: 'bg-slate-500' },
+      ]
+    : [];
 
   const maxMonthlySpend = Math.max(...expenses.map((e) => e.totalSpend), 90000);
 
@@ -94,91 +96,102 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Header & Actions Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <span>Monthly Cloud Expense Tracker</span>
-            <span>💰📈</span>
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Historical invoice breakdown across compute, storage, databases, and multi-cloud accounts.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          {/* Provider Filter Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
-            {['All', 'AWS', 'GCP', 'Azure'].map((p) => (
-              <button
-                key={p}
-                onClick={() => setSelectedProvider(p)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                  selectedProvider === p
-                    ? 'bg-slate-800 text-emerald-400 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {p === 'All' ? 'All Clouds 🌐' : p === 'AWS' ? 'AWS 🟧' : p === 'GCP' ? 'GCP 🟦' : 'Azure 🔷'}
-              </button>
-            ))}
+      {/* Top Header & Actions Bar on White Card */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-lg bg-[#081420] text-[#5FD3BF] flex items-center justify-center text-lg shrink-0 font-mono">
+              💰
+            </div>
+            <div>
+              <span className="rm-kicker">01 / MULTI-CLOUD LEDGER &amp; PRICING MODEL STACK</span>
+              <h2 className="text-xl font-bold text-[#16232F] font-serif flex items-center gap-2">
+                <span>Monthly Cloud Expense Tracker</span>
+                <span>💰📈</span>
+              </h2>
+              <p className="text-xs text-slate-600 mt-1">
+                Historical invoice breakdown across compute, storage, databases, and multi-cloud accounts evaluated by <strong>Mani Ravindran</strong>.
+              </p>
+            </div>
           </div>
 
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add Month / Forecast</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Provider Filter Tabs */}
+            <div className="flex items-center gap-1 p-1 bg-[#F3F5F1] border border-slate-200 rounded-lg">
+              {['All', 'AWS', 'GCP', 'Azure'].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setSelectedProvider(p)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                    selectedProvider === p
+                      ? 'bg-white text-[#16232F] shadow-xs border border-slate-200/80'
+                      : 'text-slate-600 hover:text-[#16232F]'
+                  }`}
+                >
+                  {p === 'All' ? 'All Clouds 🌐' : p === 'AWS' ? 'AWS 🟧' : p === 'GCP' ? 'GCP 🟦' : 'Azure 🔷'}
+                </button>
+              ))}
+            </div>
 
-          <button
-            onClick={handleExportCSV}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setShowAddModal(true)}
+              className="px-3.5 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Month / Forecast</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="px-3.5 py-2 text-xs font-semibold text-white bg-[#081420] hover:bg-slate-800 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              <Download className="w-3.5 h-3.5 text-[#5FD3BF]" />
+              <span>Export CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Main Chart Card: Monthly Spend & Commitment Breakdown */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
           <div>
-            <h3 className="text-sm font-semibold text-white">
+            <h3 className="text-base font-bold text-[#16232F] font-serif">
               6-Month Spend Trend by Pricing Model
             </h3>
-            <div className="text-xs text-slate-400 flex items-center gap-2 mt-1">
+            <div className="text-xs text-slate-500 flex items-center gap-2 mt-1 font-mono">
               <span>On-Demand vs Reserved vs Savings Plans</span>
               <span aria-hidden="true">·</span>
-              <span className="text-emerald-400 font-mono">Real-time normalized</span>
+              <span className="text-emerald-700 font-semibold">Real-time normalized</span>
             </div>
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-300">
+          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-700">
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-amber-500" />
+              <span className="w-3 h-3 rounded-xs bg-[#D79A45]" />
               <span>On-Demand (Retail)</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-sky-500" />
+              <span className="w-3 h-3 rounded-xs bg-[#3E6E86]" />
               <span>Reserved Instances</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-emerald-500" />
+              <span className="w-3 h-3 rounded-xs bg-[#2BB5A0]" />
               <span>Savings Plans / CUDs</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-purple-500" />
+              <span className="w-3 h-3 rounded-xs bg-[#0E2238]" />
               <span>Spot Capacity</span>
             </div>
           </div>
         </div>
 
         {/* SVG Stacked Bar Chart */}
-        <div className="w-full h-64 relative flex items-end justify-between gap-3 pt-6 pb-2 border-b border-slate-800">
+        <div className="w-full h-64 relative flex items-end justify-between gap-3 pt-6 pb-2 border-b border-slate-200 bg-[#F3F5F1]/60 px-4 rounded-lg">
           {filteredExpenses.map((exp) => {
             const total = exp.totalSpend;
             const barHeightPct = (total / maxMonthlySpend) * 100;
@@ -190,31 +203,31 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
             return (
               <div key={exp.id} className="flex-1 flex flex-col items-center h-full justify-end group relative">
                 {/* Tooltip on hover */}
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-12 z-20 pointer-events-none bg-slate-950 border border-slate-700 text-white text-[11px] py-1 px-2 rounded shadow-lg whitespace-nowrap font-mono tabular-nums">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-12 z-20 pointer-events-none bg-[#081420] border border-[#3E6E86]/50 text-[#EEF3F1] text-[11px] py-1.5 px-2.5 rounded shadow-lg whitespace-nowrap font-mono tabular-nums">
                   {exp.monthLabel}: {formatCurrency(total)}
-                  <div className="text-[10px] text-slate-400 font-sans">
+                  <div className="text-[10px] text-[#5FD3BF]">
                     On-Demand: {formatCurrency(exp.onDemandSpend)} ({Math.round(onDemandPct)}%)
                   </div>
                 </div>
 
                 {/* Amount label */}
-                <span className="text-[11px] font-mono tabular-nums text-slate-400 mb-1 group-hover:text-emerald-400 transition-colors">
+                <span className="text-[11px] font-mono tabular-nums font-semibold text-slate-700 mb-1 group-hover:text-emerald-700 transition-colors">
                   {formatCurrency(total, true)}
                 </span>
 
                 {/* Stacked Bar Container */}
                 <div
-                  className="w-full max-w-[56px] rounded-t overflow-hidden flex flex-col justify-end transition-all duration-300 group-hover:brightness-110"
+                  className="w-full max-w-[56px] rounded-t overflow-hidden flex flex-col justify-end transition-all duration-300 group-hover:brightness-105 shadow-xs"
                   style={{ height: `${barHeightPct}%` }}
                 >
-                  <div style={{ height: `${onDemandPct}%` }} className="bg-amber-500/90 w-full" title={`On-Demand: ${formatCurrency(exp.onDemandSpend)}`} />
-                  <div style={{ height: `${resPct}%` }} className="bg-sky-500/90 w-full" title={`Reserved: ${formatCurrency(exp.reservationSpend)}`} />
-                  <div style={{ height: `${spPct}%` }} className="bg-emerald-500/90 w-full" title={`Savings Plans: ${formatCurrency(exp.savingsPlanSpend)}`} />
-                  <div style={{ height: `${spotPct}%` }} className="bg-purple-500/90 w-full" title={`Spot: ${formatCurrency(exp.spotSpend)}`} />
+                  <div style={{ height: `${onDemandPct}%` }} className="bg-[#D79A45] w-full" title={`On-Demand: ${formatCurrency(exp.onDemandSpend)}`} />
+                  <div style={{ height: `${resPct}%` }} className="bg-[#3E6E86] w-full" title={`Reserved: ${formatCurrency(exp.reservationSpend)}`} />
+                  <div style={{ height: `${spPct}%` }} className="bg-[#2BB5A0] w-full" title={`Savings Plans: ${formatCurrency(exp.savingsPlanSpend)}`} />
+                  <div style={{ height: `${spotPct}%` }} className="bg-[#0E2238] w-full" title={`Spot: ${formatCurrency(exp.spotSpend)}`} />
                 </div>
 
                 {/* Month label */}
-                <span className="text-xs font-semibold text-slate-400 mt-2 truncate w-full text-center">
+                <span className="text-xs font-mono font-semibold text-slate-700 mt-2 truncate w-full text-center">
                   {exp.monthLabel.split(' ')[0]}
                 </span>
               </div>
@@ -226,30 +239,30 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
       {/* 2-Column Split: Category Breakdown & Account Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Spend by Service Category */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center justify-between">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
+          <h3 className="text-base font-bold text-[#16232F] font-serif mb-4 pb-3 border-b border-slate-100 flex items-center justify-between">
             <span>Spend Breakdown by Category (Current Month)</span>
-            <span className="text-xs font-mono text-emerald-400">
+            <span className="text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded">
               {latestExpense ? formatCurrency(latestExpense.totalSpend) : '$0'}
             </span>
           </h3>
 
-          <div className="space-y-3.5">
+          <div className="space-y-4">
             {categoryData.map((cat) => {
               const total = latestExpense?.totalSpend || 1;
               const pct = Math.round((cat.amount / total) * 100);
               return (
                 <div key={cat.name} className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-300 flex items-center gap-1.5 font-medium">
+                    <span className="text-slate-700 flex items-center gap-1.5 font-medium">
                       <span>{cat.emoji}</span>
                       <span>{cat.name}</span>
                     </span>
-                    <span className="font-mono tabular-nums text-slate-200 font-semibold">
+                    <span className="font-mono tabular-nums text-[#16232F] font-semibold">
                       {formatCurrency(cat.amount)} ({pct}%)
                     </span>
                   </div>
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                     <div className={`${cat.color} h-full rounded-full`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -259,10 +272,10 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
         </div>
 
         {/* Right: Spend by Account / Cloud Provider */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
-          <h3 className="text-sm font-semibold text-white mb-4 flex items-center justify-between">
-            <span>Major Cloud Providers & Account Share</span>
-            <span className="text-xs text-slate-400 font-mono">3 Connected Environments</span>
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
+          <h3 className="text-base font-bold text-[#16232F] font-serif mb-4 pb-3 border-b border-slate-100 flex items-center justify-between">
+            <span>Major Cloud Providers &amp; Account Share</span>
+            <span className="text-xs text-slate-600 font-mono">3 Connected Environments</span>
           </h3>
 
           <div className="space-y-4">
@@ -271,24 +284,24 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
               const pct = Math.round((acc.spend / total) * 100);
               const providerEmoji = acc.provider === 'AWS' ? '🟧 AWS' : acc.provider === 'GCP' ? '🟦 GCP' : '🔷 Azure';
               return (
-                <div key={acc.name} className="p-3.5 rounded-lg bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+                <div key={acc.name} className="p-4 rounded-lg bg-[#F3F5F1] border border-slate-200/90 hover:border-emerald-400 transition-colors">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-200">{providerEmoji}</span>
-                      <span className="text-xs text-slate-400">· {acc.name}</span>
+                      <span className="text-xs font-bold text-[#16232F] font-mono">{providerEmoji}</span>
+                      <span className="text-xs text-slate-600">· {acc.name}</span>
                     </div>
-                    <span className="text-sm font-bold font-mono tabular-nums text-emerald-400">
+                    <span className="text-sm font-bold font-mono tabular-nums text-emerald-700">
                       {formatCurrency(acc.spend)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
+                  <div className="flex items-center justify-between text-[11px] text-slate-600 mb-1.5">
                     <span>Invoice Share:</span>
-                    <span className="font-mono tabular-nums text-slate-300">{pct}% of total</span>
+                    <span className="font-mono tabular-nums text-slate-800 font-medium">{pct}% of total</span>
                   </div>
-                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
-                        acc.provider === 'AWS' ? 'bg-amber-500' : acc.provider === 'GCP' ? 'bg-blue-500' : 'bg-sky-400'
+                        acc.provider === 'AWS' ? 'bg-[#D79A45]' : acc.provider === 'GCP' ? 'bg-[#3E6E86]' : 'bg-[#2BB5A0]'
                       }`}
                       style={{ width: `${pct}%` }}
                     />
@@ -302,83 +315,84 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
 
       {/* Modal: Add Manual Expense Adjustment / Forecast */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-md w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-              <span>Add Monthly Expense / Budget Forecast</span>
+        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-2xl">
+            <span className="rm-kicker">BUDGET FORECAST SIMULATOR</span>
+            <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
+              <span>Add Monthly Expense / Forecast</span>
               <span>📈</span>
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
-              Simulate next month's projected spend to analyze potential savings and benchmark shifts.
+            <p className="text-xs text-slate-600 mb-4">
+              Simulate next month&apos;s projected spend to analyze potential savings and benchmark shifts.
             </p>
 
             <form onSubmit={handleSaveNewExpense} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Month Label
                 </label>
                 <input
                   type="text"
                   value={newMonthName}
                   onChange={(e) => setNewMonthName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-sm text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Total Spend ($ USD)
                 </label>
                 <input
                   type="number"
                   value={newTotalSpend}
                   onChange={(e) => setNewTotalSpend(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-sm text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Compute Spend ($)
                   </label>
                   <input
                     type="number"
                     value={newComputeSpend}
                     onChange={(e) => setNewComputeSpend(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-sm text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Storage Spend ($)
                   </label>
                   <input
                     type="number"
                     value={newStorageSpend}
                     onChange={(e) => setNewStorageSpend(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-sm text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                     required
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-[#16232F] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg transition-colors cursor-pointer"
                 >
-                  Save & Simulate
+                  Save &amp; Simulate
                 </button>
               </div>
             </form>

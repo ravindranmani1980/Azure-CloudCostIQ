@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cloud, CheckCircle, RefreshCw, Key, ShieldCheck, Terminal, Copy, Check, Radio } from 'lucide-react';
+import { RefreshCw, Key, Terminal, Copy, Check } from 'lucide-react';
 import { CloudApiProviderConfig, CloudProvider } from '../types/cost';
 
 interface ApiIntegrationTabProps {
@@ -43,26 +43,31 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🌐⚡</span>
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                Real-Time Cloud Provider Billing API Integrations
-              </h2>
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-lg bg-[#081420] text-[#5FD3BF] flex items-center justify-center text-lg shrink-0 font-mono">
+              🌐
             </div>
-            <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
-              Direct API connectors ingesting real-time usage metrics and hourly invoice line items from AWS Cost Explorer, GCP Cloud Billing, and Azure Cost Management.
-            </p>
+            <div>
+              <span className="rm-kicker">05 / CLOUD BILLING TELEMETRY CONNECTORS</span>
+              <h2 className="text-xl font-bold text-[#16232F] font-serif flex items-center gap-2">
+                <span>Real-Time Cloud Provider Billing API Integrations</span>
+                <span>🌐⚡</span>
+              </h2>
+              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed mt-1">
+                Direct API connectors ingesting real-time usage metrics and hourly invoice line items from AWS Cost Explorer, GCP Cloud Billing, and Azure Cost Management.
+              </p>
+            </div>
           </div>
 
           <button
+            type="button"
             onClick={() => onTriggerSync()}
             disabled={isSyncing}
-            className="px-4 py-2 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+            className="px-4 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
           >
-            <RefreshCw className={`w-4 h-4 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? 'Synchronizing All Providers...' : 'Pull Live Billing Now 🔄'}</span>
           </button>
         </div>
@@ -76,51 +81,48 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
             <div
               key={p.id}
               onClick={() => setSelectedProviderId(p.id)}
-              className={`bg-slate-900/90 border rounded-xl p-5 cursor-pointer transition-all ${
+              className={`bg-white border rounded-xl p-5 cursor-pointer transition-all shadow-xs ${
                 isSelected
-                  ? 'border-emerald-500 shadow-md shadow-emerald-950/40 bg-slate-900'
-                  : 'border-slate-800 hover:border-slate-700'
+                  ? 'border-[#2BB5A0] ring-2 ring-[#2BB5A0]/20'
+                  : 'border-slate-200 hover:border-emerald-400'
               }`}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
                   <span className="text-2xl">{p.emoji}</span>
                   <div>
-                    <h3 className="text-sm font-bold text-white tracking-tight">
+                    <h3 className="text-sm font-bold text-[#16232F] tracking-tight">
                       {p.name}
                     </h3>
-                    <div className="text-[11px] text-slate-400 font-mono">
+                    <div className="text-[11px] text-slate-500 font-mono">
                       {p.provider} Billing API
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[11px] text-emerald-400 font-semibold font-mono">
-                    ONLINE
-                  </span>
-                </div>
+                <span className="px-2 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 text-[11px] text-emerald-800 font-semibold font-mono">
+                  PASS · ONLINE
+                </span>
               </div>
 
-              <div className="space-y-2 text-xs text-slate-400 font-mono pt-2 border-t border-slate-800">
+              <div className="space-y-2 text-xs text-slate-600 font-mono p-3 rounded-lg bg-[#F3F5F1] border border-slate-200/80">
                 <div className="flex justify-between">
                   <span>Last Pull:</span>
-                  <span className="text-slate-200">{p.lastSyncTime}</span>
+                  <span className="text-[#16232F] font-medium">{p.lastSyncTime}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Events Ingested:</span>
-                  <span className="text-emerald-400 font-bold tabular-nums">
+                  <span className="text-emerald-700 font-bold tabular-nums">
                     {p.totalEventsProcessed.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Interval:</span>
-                  <span className="text-slate-300">Every {p.syncIntervalSeconds}s</span>
+                  <span className="text-slate-700">Every {p.syncIntervalSeconds}s</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 mt-2 border-t border-slate-800/80">
+              <div className="flex items-center justify-between pt-4 mt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -128,7 +130,7 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                     onTriggerSync(p.provider);
                   }}
                   disabled={isSyncing}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-emerald-700 hover:text-emerald-800 font-mono font-semibold flex items-center gap-1 cursor-pointer"
                 >
                   <RefreshCw className="w-3 h-3" />
                   <span>Pull {p.provider}</span>
@@ -140,7 +142,7 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                     e.stopPropagation();
                     setEditProviderModal(p);
                   }}
-                  className="text-xs text-slate-400 hover:text-white font-medium cursor-pointer"
+                  className="text-xs text-slate-600 hover:text-[#16232F] font-medium cursor-pointer"
                 >
                   Configure ⚙️
                 </button>
@@ -150,65 +152,67 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
         })}
       </div>
 
-      {/* Selected Provider Live Ingestion Stream & Payload Viewer */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+      {/* Selected Provider Live Ingestion Stream & Payload Viewer in Dark Navy xh-panel */}
+      <div className="xh-panel">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-[#C9D3D9]/12">
           <div className="flex items-center gap-2.5">
-            <Terminal className="w-4 h-4 text-emerald-400" />
+            <Terminal className="w-4 h-4 text-[#5FD3BF]" />
             <div>
-              <h3 className="text-sm font-semibold text-white">
+              <h3 className="text-sm font-semibold text-[#EEF3F1]">
                 Live Ingestion Stream: {activeProvider.name}
               </h3>
-              <div className="text-[11px] text-slate-400 font-mono">
-                Endpoint: <span className="text-slate-300">{activeProvider.apiEndpoint}</span>
+              <div className="text-[11px] text-[#A9B7BF] font-mono">
+                Endpoint: <span className="text-[#5FD3BF]">{activeProvider.apiEndpoint}</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={handleCopyPayload}
-              className="px-3 py-1.5 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="xh-btn !py-1.5 !px-3 !text-xs cursor-pointer"
             >
-              {copiedPayload ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedPayload ? <Check className="w-3.5 h-3.5 text-[#5FD3BF]" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copiedPayload ? 'Copied JSON' : 'Copy Payload'}</span>
             </button>
           </div>
         </div>
 
         {/* Credentials / Auth Banner */}
-        <div className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div className="p-3 rounded-lg bg-[#102236] border border-[#3E6E86]/45 text-xs font-mono text-[#A9B7BF] flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-2 truncate">
-            <Key className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span className="text-slate-500">IAM Role / Secret:</span>
-            <span className="text-slate-300 truncate">{activeProvider.credentialsMasked}</span>
+            <Key className="w-3.5 h-3.5 text-[#EBC385] shrink-0" />
+            <span className="text-[#7F909A]">IAM Role / Secret:</span>
+            <span className="text-[#EEF3F1] truncate">{activeProvider.credentialsMasked}</span>
           </div>
-          <span className="text-emerald-400 font-semibold text-[11px] shrink-0">
+          <span className="text-[#5FD3BF] font-semibold text-[11px] shrink-0">
             ✓ Read-Only Billing Scope Granted
           </span>
         </div>
 
         {/* JSON Code Viewer */}
-        <div className="bg-slate-950 rounded-lg p-4 border border-slate-800/80 font-mono text-xs text-emerald-300 overflow-x-auto max-h-72">
+        <div className="bg-[#081420] rounded-lg p-4 border border-[#3E6E86]/40 font-mono text-xs text-[#5FD3BF] overflow-x-auto max-h-72">
           <pre>{JSON.stringify(activeProvider.recentPayload, null, 2)}</pre>
         </div>
       </div>
 
       {/* Edit Config Modal */}
       {editProviderModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl max-w-lg w-full p-6 shadow-2xl">
+            <span className="rm-kicker">PROVIDER CONNECTOR SETTINGS</span>
+            <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
               <span>Configure {editProviderModal.name} API Connector</span>
               <span>{editProviderModal.emoji}</span>
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-slate-600 mb-4">
               Enter your read-only billing IAM role ARN, service account or API credentials.
             </p>
 
             <form onSubmit={handleSaveConfig} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   API Endpoint / Service URL
                 </label>
                 <input
@@ -217,13 +221,13 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                   onChange={(e) =>
                     setEditProviderModal({ ...editProviderModal, apiEndpoint: e.target.value })
                   }
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Credentials / Role ARN / Service Account
                 </label>
                 <input
@@ -235,14 +239,14 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                       credentialsMasked: e.target.value,
                     })
                   }
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Poll Interval (Seconds)
                   </label>
                   <input
@@ -254,7 +258,7 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                         syncIntervalSeconds: parseInt(e.target.value, 10) || 30,
                       })
                     }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] font-mono focus:outline-none focus:border-[#2BB5A0]"
                     required
                   />
                 </div>
@@ -267,25 +271,25 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
                     onChange={(e) =>
                       setEditProviderModal({ ...editProviderModal, autoSync: e.target.checked })
                     }
-                    className="rounded bg-slate-950 border-slate-700 text-emerald-500 focus:ring-emerald-500 h-4 w-4 cursor-pointer"
+                    className="rounded bg-white border-slate-300 text-[#2BB5A0] focus:ring-[#2BB5A0] h-4 w-4 cursor-pointer"
                   />
-                  <label htmlFor="autoSyncCheck" className="text-xs text-slate-300 cursor-pointer">
+                  <label htmlFor="autoSyncCheck" className="text-xs text-slate-700 font-medium cursor-pointer">
                     Enable Auto-Sync
                   </label>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setEditProviderModal(null)}
-                  className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-[#16232F] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-[#04211B] bg-[#2BB5A0] hover:bg-[#5FD3BF] rounded-lg transition-colors cursor-pointer"
                 >
                   Save Configuration
                 </button>

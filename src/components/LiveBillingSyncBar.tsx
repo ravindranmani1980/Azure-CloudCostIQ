@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, CheckCircle2, SlidersHorizontal, Radio } from 'lucide-react';
+import { RefreshCw, SlidersHorizontal, Globe } from 'lucide-react';
 import { CloudApiProviderConfig, CloudProvider } from '../types/cost';
 
 interface LiveBillingSyncBarProps {
@@ -36,74 +36,94 @@ export const LiveBillingSyncBar: React.FC<LiveBillingSyncBarProps> = ({
   }, [autoSyncEnabled, onTriggerSync]);
 
   return (
-    <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-      {/* Left: Cloud Provider Connection Statuses */}
-      <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-          <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-          <span>Real-Time Cloud Billing Feeds:</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {providers.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800/80 border border-slate-700/60 text-xs text-slate-300"
+    <div className="bg-[#081420] border-b border-[#3E6E86]/40 text-[#C6D1D6] px-4 sm:px-6 py-2.5 text-xs">
+      <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
+        {/* Left: Active Target & Cloud Feeds */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <Globe className="w-3.5 h-3.5 text-[#5FD3BF]" />
+            <span className="text-[#A9B7BF]">Active Target:</span>
+            <a
+              href="https://ravindran.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono font-semibold text-[#EEF3F1] hover:text-[#5FD3BF] transition-colors"
             >
-              <span>{p.emoji}</span>
-              <span className="font-medium">{p.name.split(' ')[0]}</span>
-              <span className="text-slate-500 font-mono text-[11px] tabular-nums">
-                ({p.totalEventsProcessed.toLocaleString()})
-              </span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" title="API Status: Connected" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Right: Actions & Trigger */}
-      <div className="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0">
-        <div className="text-right hidden sm:block">
-          <div className="text-[11px] text-slate-400 flex items-center gap-1.5 justify-end">
-            <span>Last sync:</span>
-            <span className="text-slate-200 font-mono">{lastSyncTimestamp}</span>
+              ravindran.in
+            </a>
+            <span className="font-mono text-[#5FD3BF]">(Multi-Cloud FinOps)</span>
           </div>
-          {autoSyncEnabled && (
-            <div className="text-[10px] text-emerald-400/80 font-mono">
-              Auto-pull in {countdown}s ⏱️
-            </div>
-          )}
+
+          <span className="text-[#3E6E86]" aria-hidden="true">·</span>
+
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#A9B7BF]">Advisor:</span>
+            <strong className="font-semibold text-[#EEF3F1]">Mani Ravindran</strong>
+          </div>
+
+          <span className="text-[#3E6E86]" aria-hidden="true">·</span>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[#A9B7BF]">Real-Time Cloud Billing Feeds:</span>
+            {providers.map((p) => (
+              <span
+                key={p.id}
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#0D1C2D] border border-[#3E6E86]/45 text-[11px] font-mono text-[#EEF3F1]"
+              >
+                <span>{p.emoji}</span>
+                <span>{p.name.split(' ')[0]}</span>
+                <span className="text-[#5FD3BF] tabular-nums">
+                  ({p.totalEventsProcessed.toLocaleString()})
+                </span>
+              </span>
+            ))}
+          </div>
         </div>
 
-        <button
-          onClick={() => setAutoSyncEnabled(!autoSyncEnabled)}
-          className={`px-2.5 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
-            autoSyncEnabled
-              ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300 hover:bg-emerald-900/40'
-              : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'
-          }`}
-          title="Toggle automatic background billing sync"
-        >
-          {autoSyncEnabled ? 'Auto-Sync: ON ⚡' : 'Auto-Sync: Paused ⏸️'}
-        </button>
+        {/* Right: Sync Status & Controls */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-between lg:justify-end shrink-0">
+          <div className="flex items-center gap-2 font-mono text-[11px] text-[#A9B7BF]">
+            <span>Last sync: <strong className="text-[#EEF3F1] font-normal">{lastSyncTimestamp}</strong></span>
+            {autoSyncEnabled && (
+              <span className="text-[#5FD3BF]">· Auto-pull {countdown}s ⏱️</span>
+            )}
+          </div>
 
-        <button
-          onClick={() => onTriggerSync()}
-          disabled={isSyncing}
-          className="px-3 py-1.5 text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-800 border border-slate-700 rounded-lg flex items-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
-          <span>{isSyncing ? 'Pulling Data...' : 'Pull Real-Time Billing 🔄'}</span>
-        </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setAutoSyncEnabled(!autoSyncEnabled)}
+              className={`px-2.5 py-1 text-[11px] font-mono rounded border transition-colors cursor-pointer whitespace-nowrap ${
+                autoSyncEnabled
+                  ? 'bg-[#102236] border-[#5FD3BF]/40 text-[#5FD3BF] hover:border-[#5FD3BF]'
+                  : 'bg-[#0D1C2D] border-[#3E6E86]/40 text-[#A9B7BF] hover:text-[#EEF3F1]'
+              }`}
+              title="Toggle automatic background billing sync"
+            >
+              {autoSyncEnabled ? 'Auto-Sync: ON ⚡' : 'Auto-Sync: Paused ⏸️'}
+            </button>
 
-        <button
-          onClick={onOpenApiTab}
-          className="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg border border-transparent hover:border-slate-700 transition-colors cursor-pointer"
-          title="Configure API Keys, IAM Roles & Endpoints"
-          aria-label="Configure Cloud Billing APIs"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </button>
+            <button
+              type="button"
+              onClick={() => onTriggerSync()}
+              disabled={isSyncing}
+              className="xh-btn !py-1 !px-2.5 !text-xs whitespace-nowrap cursor-pointer disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 text-[#5FD3BF] ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{isSyncing ? 'Pulling Data...' : 'Pull Real-Time Billing 🔄'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onOpenApiTab}
+              className="p-1.5 text-[#A9B7BF] hover:text-[#5FD3BF] bg-[#0D1C2D] hover:bg-[#102236] rounded border border-[#3E6E86]/40 transition-colors cursor-pointer"
+              title="Configure API Keys, IAM Roles & Endpoints"
+              aria-label="Configure Cloud Billing APIs"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
