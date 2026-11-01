@@ -400,7 +400,7 @@ export const INITIAL_ALERT_RULES: AlertRule[] = [
     thresholdPercentage: 25,
     minDollarSpike: 250,
     enabled: true,
-    notifyEmail: 'MANI.RAVINDRAN@gmail.com',
+    notifyEmail: 'https://ravindran.in/contact.html',
     channel: 'email',
   },
   {
@@ -409,7 +409,7 @@ export const INITIAL_ALERT_RULES: AlertRule[] = [
     thresholdPercentage: 100,
     minDollarSpike: 500,
     enabled: true,
-    notifyEmail: 'MANI.RAVINDRAN@gmail.com',
+    notifyEmail: 'https://ravindran.in/contact.html',
     channel: 'webhook',
   },
   {
@@ -418,7 +418,7 @@ export const INITIAL_ALERT_RULES: AlertRule[] = [
     thresholdPercentage: 50,
     minDollarSpike: 300,
     enabled: true,
-    notifyEmail: 'MANI.RAVINDRAN@gmail.com',
+    notifyEmail: 'https://ravindran.in/contact.html',
     channel: 'in-app',
   },
 ];

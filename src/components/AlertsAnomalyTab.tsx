@@ -46,7 +46,7 @@ export const AlertsAnomalyTab: React.FC<AlertsAnomalyTabProps> = ({
       thresholdPercentage: parseInt(newThresholdPct, 10) || 25,
       minDollarSpike: parseInt(newMinDollar, 10) || 200,
       enabled: true,
-      notifyEmail: 'MANI.RAVINDRAN@gmail.com',
+      notifyEmail: 'https://ravindran.in/contact.html',
       channel: newChannel,
     };
 
@@ -82,7 +82,15 @@ export const AlertsAnomalyTab: React.FC<AlertsAnomalyTabProps> = ({
                   Active Rules: <strong className="text-emerald-700">{rules.filter((r) => r.enabled).length}</strong>
                 </span>
                 <span className="text-slate-600">
-                  Spike Alert Dispatch: <strong className="text-[#16232F]">MANI.RAVINDRAN@gmail.com</strong>
+                  Spike Alert Dispatch:{' '}
+                  <a
+                    href="https://ravindran.in/contact.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold text-[#16232F] hover:text-emerald-700 underline underline-offset-2"
+                  >
+                    https://ravindran.in/contact.html
+                  </a>
                 </span>
               </div>
             </div>
@@ -367,7 +375,18 @@ export const AlertsAnomalyTab: React.FC<AlertsAnomalyTabProps> = ({
                     Min Dollar Surge: <strong className="text-[#16232F]">${rule.minDollarSpike}</strong>
                   </div>
                   <div>
-                    Channel: <span className="capitalize">{rule.channel}</span> ({rule.notifyEmail})
+                    Channel: <span className="capitalize">{rule.channel}</span> (
+                    <a
+                      href="https://ravindran.in/contact.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 hover:underline"
+                    >
+                      {rule.notifyEmail.toLowerCase().includes('gmail.com')
+                        ? 'https://ravindran.in/contact.html'
+                        : rule.notifyEmail}
+                    </a>
+                    )
                   </div>
                 </div>
               </div>
@@ -452,7 +471,7 @@ export const AlertsAnomalyTab: React.FC<AlertsAnomalyTabProps> = ({
                   onChange={(e) => setNewChannel(e.target.value as 'email' | 'webhook' | 'in-app')}
                   className="w-full bg-[#F3F5F1] border border-slate-300 rounded-lg px-3 py-2 text-xs text-[#16232F] focus:outline-none focus:border-[#2BB5A0]"
                 >
-                  <option value="email">Email (MANI.RAVINDRAN@gmail.com)</option>
+                  <option value="email">Contact Portal (https://ravindran.in/contact.html)</option>
                   <option value="webhook">Webhook / PagerDuty / Slack</option>
                   <option value="in-app">In-App Dashboard Toast</option>
                 </select>

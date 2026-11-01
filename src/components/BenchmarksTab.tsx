@@ -24,7 +24,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
       )
       .join('\n\n');
 
-    const summary = `Maniq | Spend — FinOps Reservation & Savings Plan Benchmarks Report\nCurated by Mani Ravindran (ravindran.in)\nOverall Maturity Score: ${maturity.score}/100 (${maturity.grade})\n\n${text}`;
+    const summary = `Maniq | Spend — FinOps Reservation & Savings Plan Benchmarks Report\nCurated by Ravindran Mani (ravindran.in)\nOverall Maturity Score: ${maturity.score}/100 (${maturity.grade})\n\n${text}`;
     navigator.clipboard.writeText(summary);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -50,7 +50,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                 </span>
               </div>
               <p className="text-xs text-slate-600 max-w-2xl leading-relaxed mt-1">
-                Standardized comparison against 1,200+ global enterprises using the FinOps Foundation Maturity Framework evaluated by <strong>Mani Ravindran</strong>.
+                Standardized comparison against 1,200+ global enterprises using the FinOps Foundation Maturity Framework evaluated by <strong>Ravindran Mani</strong>.
               </p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
         })}
       </div>
 
-      {/* Advisory Note from Mani Ravindran in Dark Navy xh-panel */}
+      {/* Advisory Note from Ravindran Mani in Dark Navy xh-panel */}
       <div className="xh-panel flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="rm-mono-mark !w-11 !h-11 !text-base shrink-0">
@@ -251,7 +251,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
           </div>
           <div>
             <h4 className="text-sm font-bold text-[#EEF3F1]">
-              Enterprise Commitment Strategy by Mani Ravindran
+              Enterprise Commitment Strategy by Ravindran Mani
             </h4>
             <p className="text-xs text-[#A9B7BF] max-w-2xl mt-0.5 leading-relaxed">
               &quot;Most enterprises lose millions by over-committing to rigid 3-year standard RIs. By pairing 1-year Compute Savings Plans with flexible Spot pools and automated instance downsizing, you can exceed top quartile performance without capacity lock-in.&quot;

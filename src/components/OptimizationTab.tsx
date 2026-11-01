@@ -108,7 +108,7 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                 <span>💰📈</span>
               </h2>
               <p className="text-xs text-slate-600 max-w-2xl mt-1">
-                Actionable FinOps recommendations across compute, reservations, idle zombie resources, and egress evaluated by <strong>Mani Ravindran</strong>. Click &quot;Apply&quot; to simulate realized savings.
+                Actionable FinOps recommendations across compute, reservations, idle zombie resources, and egress evaluated by <strong>Ravindran Mani</strong>. Click &quot;Apply&quot; to simulate realized savings.
               </p>
 
               <div className="flex flex-wrap items-center gap-3 mt-4 text-xs font-mono">
@@ -159,7 +159,7 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold text-[#5FD3BF] font-mono flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Mani Ravindran&apos;s FinOps Execution Runbook</span>
+                <span>Ravindran Mani&apos;s FinOps Execution Runbook</span>
               </span>
               <button
                 type="button"
@@ -181,7 +181,7 @@ export const OptimizationTab: React.FC<OptimizationTabProps> = ({
                 onClick={onOpenPremiumSupport}
                 className="text-[#EBC385] hover:text-[#D79A45] font-mono font-semibold text-[11px] underline cursor-pointer"
               >
-                Contact Mani Ravindran for 1-on-1 Consultation →
+                Contact Ravindran Mani for 1-on-1 Consultation →
               </button>
             </div>
           </div>

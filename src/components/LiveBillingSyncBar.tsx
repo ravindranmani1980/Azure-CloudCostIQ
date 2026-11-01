@@ -58,7 +58,7 @@ export const LiveBillingSyncBar: React.FC<LiveBillingSyncBarProps> = ({
 
           <div className="flex items-center gap-1.5">
             <span className="text-[#A9B7BF]">Advisor:</span>
-            <strong className="font-semibold text-[#EEF3F1]">Mani Ravindran</strong>
+            <strong className="font-semibold text-[#EEF3F1]">Ravindran Mani</strong>
           </div>
 
           <span className="text-[#3E6E86]" aria-hidden="true">·</span>

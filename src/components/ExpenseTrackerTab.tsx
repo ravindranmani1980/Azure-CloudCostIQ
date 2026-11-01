@@ -110,7 +110,7 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
                 <span>💰📈</span>
               </h2>
               <p className="text-xs text-slate-600 mt-1">
-                Historical invoice breakdown across compute, storage, databases, and multi-cloud accounts evaluated by <strong>Mani Ravindran</strong>.
+                Historical invoice breakdown across compute, storage, databases, and multi-cloud accounts evaluated by <strong>Ravindran Mani</strong>.
               </p>
             </div>
           </div>

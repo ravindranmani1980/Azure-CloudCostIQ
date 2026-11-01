@@ -73,7 +73,21 @@ export default function App() {
 
   const [rules, setRules] = useState<AlertRule[]>(() => {
     const saved = localStorage.getItem('cloudcost_rules');
-    return saved ? JSON.parse(saved) : INITIAL_ALERT_RULES;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as AlertRule[];
+        return parsed.map((r) => ({
+          ...r,
+          notifyEmail:
+            !r.notifyEmail || r.notifyEmail.toLowerCase().includes('gmail.com')
+              ? 'https://ravindran.in/contact.html'
+              : r.notifyEmail,
+        }));
+      } catch {
+        return INITIAL_ALERT_RULES;
+      }
+    }
+    return INITIAL_ALERT_RULES;
   });
 
   const [providers, setProviders] = useState<CloudApiProviderConfig[]>(() => {
@@ -382,7 +396,7 @@ export default function App() {
       return updated;
     });
 
-    showToast(`🚨 SUDDEN SPIKE ALERT: ${picked.name} spiked +${pct}% ($${picked.spike})! Alert dispatched to MANI.RAVINDRAN@gmail.com`);
+    showToast(`🚨 SUDDEN SPIKE ALERT: ${picked.name} spiked +${pct}% ($${picked.spike})! Alert dispatched to https://ravindran.in/contact.html`);
     setActiveTab('alerts');
   };
 
@@ -433,7 +447,7 @@ export default function App() {
             {/* Postrix Dark Navy Hero Panel (.xh-panel) */}
             <section className="xh-panel">
               <div className="xh-kicker">
-                <span className="k">💰📈 MANIQ | SPEND · FINOPS INTELLIGENCE CURATED BY MANI RAVINDRAN</span>
+                <span className="k">💰📈 MANIQ | SPEND · FINOPS INTELLIGENCE CURATED BY RAVINDRAN MANI</span>
                 <span className="tag">FinOps Maturity v2.6 · Azure / AWS / GCP Live Connectors</span>
               </div>
 
@@ -525,7 +539,7 @@ export default function App() {
                       </span>
                     </div>
                     <p className="text-xs text-slate-600 mt-1">
-                      Live commitment coverage progress bar and condition-by-condition FinOps benchmark checklist evaluated by <strong>Mani Ravindran</strong>
+                      Live commitment coverage progress bar and condition-by-condition FinOps benchmark checklist evaluated by <strong>Ravindran Mani</strong>
                     </p>
                   </div>
                 </div>
@@ -758,7 +772,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* FinOps Advisor Spotlight: Mani Ravindran */}
+            {/* FinOps Advisor Spotlight: Ravindran Mani */}
             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="rm-mono-mark !w-14 !h-14 !text-lg shrink-0">
@@ -767,14 +781,14 @@ export default function App() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-base font-bold text-[#16232F] font-serif">
-                      FinOps Architecture &amp; Cost Optimization by Mani Ravindran
+                      FinOps Architecture &amp; Cost Optimization by Ravindran Mani
                     </h3>
                     <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-100/80 border border-emerald-300 text-emerald-800 font-semibold">
                       Enterprise Advisor
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                    Looking to negotiate an AWS EDP, Azure EA commitment, or Google Cloud CUD? Need tailored Kubernetes cost allocation or automated anomaly response? Connect directly with Mani Ravindran.
+                    Looking to negotiate an AWS EDP, Azure EA commitment, or Google Cloud CUD? Need tailored Kubernetes cost allocation or automated anomaly response? Connect directly with Ravindran Mani.
                   </p>
                   <div className="flex flex-wrap items-center gap-4 text-xs pt-2 font-mono">
                     <a
@@ -788,11 +802,13 @@ export default function App() {
                     </a>
                     <span className="text-slate-400" aria-hidden="true">·</span>
                     <a
-                      href="mailto:MANI.RAVINDRAN@gmail.com"
-                      className="text-slate-700 hover:text-emerald-700 flex items-center gap-1"
+                      href="https://ravindran.in/contact.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-700 hover:text-emerald-700 flex items-center gap-1 underline underline-offset-4"
                     >
                       <Mail className="w-3 h-3 text-[#2BB5A0]" />
-                      <span>MANI.RAVINDRAN@gmail.com</span>
+                      <span>https://ravindran.in/contact.html</span>
                     </a>
                   </div>
                 </div>
@@ -878,7 +894,7 @@ export default function App() {
 
           <div className="flex flex-wrap items-center gap-3">
             <span>
-              Author: <strong className="font-medium text-[#F3F5F1]">Mani Ravindran</strong>
+              Author: <strong className="font-medium text-[#F3F5F1]">Ravindran Mani</strong>
             </span>
             <span className="text-[#3E6E86]" aria-hidden="true">·</span>
             <a
@@ -891,8 +907,10 @@ export default function App() {
             </a>
             <span className="text-[#3E6E86]" aria-hidden="true">·</span>
             <a
-              href="mailto:MANI.RAVINDRAN@gmail.com"
-              className="font-mono text-[#B9C4CC] hover:text-[#5FD3BF] transition-colors"
+              href="https://ravindran.in/contact.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[#B9C4CC] hover:text-[#5FD3BF] transition-colors underline underline-offset-4"
             >
               Contact Support
             </a>
