@@ -50,8 +50,14 @@ export const PremiumSupportModal: React.FC<PremiumSupportModalProps> = ({
   const directMailtoUrl = `mailto:MANI.RAVINDRAN@gmail.com?subject=${emailSubject}&body=${emailBody}`;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#081420]/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full shadow-2xl relative my-8 overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 bg-[#081420]/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full shadow-2xl relative my-8 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Dark Navy Postrix Header Banner */}
         <div className="bg-[#081420] text-[#EEF3F1] p-6 border-b border-[#3E6E86]/45 relative">
           <button

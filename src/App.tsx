@@ -916,8 +916,14 @@ export default function App() {
 
       {/* Global Quick-Access Live Cloud Connect Modal */}
       {isLiveConnectModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#081420]/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="max-w-5xl w-full my-8">
+        <div
+          className="fixed inset-0 z-50 bg-[#081420]/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setIsLiveConnectModalOpen(false)}
+        >
+          <div
+            className="max-w-5xl w-full my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
             <LiveCloudConnectStudio
               providers={providers}
               onApplyLiveBillingResult={(res) => {

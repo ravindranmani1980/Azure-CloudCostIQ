@@ -315,8 +315,14 @@ export const ExpenseTrackerTab: React.FC<ExpenseTrackerTabProps> = ({
 
       {/* Modal: Add Manual Expense Adjustment / Forecast */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowAddModal(false)}
+        >
+          <div
+            className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <span className="rm-kicker">BUDGET FORECAST SIMULATOR</span>
             <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
               <span>Add Monthly Expense / Forecast</span>

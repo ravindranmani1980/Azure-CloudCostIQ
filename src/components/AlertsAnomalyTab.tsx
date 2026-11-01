@@ -383,8 +383,14 @@ export const AlertsAnomalyTab: React.FC<AlertsAnomalyTabProps> = ({
 
       {/* Modal: Add Custom Rule */}
       {showAddRuleModal && (
-        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowAddRuleModal(false)}
+        >
+          <div
+            className="bg-white border border-slate-200 rounded-xl max-w-md w-full p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <span className="rm-kicker">ALERT GOVERNANCE RULE</span>
             <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
               <span>Create Spike Alert Rule</span>

@@ -278,8 +278,14 @@ export const ApiIntegrationTab: React.FC<ApiIntegrationTabProps> = ({
 
       {/* Edit Config Modal */}
       {editProviderModal && (
-        <div className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-xl max-w-lg w-full p-6 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 bg-[#081420]/75 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setEditProviderModal(null)}
+        >
+          <div
+            className="bg-white border border-slate-200 rounded-xl max-w-lg w-full p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <span className="rm-kicker">PROVIDER CONNECTOR SETTINGS</span>
             <h3 className="text-lg font-bold text-[#16232F] font-serif mb-1 flex items-center gap-2">
               <span>Configure {editProviderModal.name} API Connector</span>
