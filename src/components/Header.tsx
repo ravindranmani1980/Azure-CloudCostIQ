@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
             RM
           </span>
           <span>
-            Maniq <span className="text-[#3E6E86] font-normal mx-0.5">|</span> <span className="accent">CloudCost IQ</span>
+            Maniq <span className="text-[#3E6E86] font-normal mx-0.5">|</span> <span className="accent">Spend</span>
           </span>
         </button>
 

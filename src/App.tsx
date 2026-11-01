@@ -28,6 +28,7 @@ import {
   CloudApiProviderConfig,
   DailyExpensePoint,
   CloudProvider,
+  LiveConnectionResult,
 } from './types/cost';
 
 import {
@@ -38,11 +39,12 @@ import {
   formatCurrency,
 } from './utils/costCalculations';
 
-import { Sparkles, ArrowRight, ShieldCheck, Zap, ExternalLink, Mail, Globe } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, Zap, ExternalLink, Mail, Globe, PlugZap } from 'lucide-react';
 
 export default function App() {
   // Navigation State
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [selectedApiProviderId, setSelectedApiProviderId] = useState<'aws' | 'gcp' | 'azure'>('azure');
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -121,7 +123,115 @@ export default function App() {
   // Trigger Toast
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  // Navigate to Cloud Billing API tab focused on specific provider
+  const handleOpenApiTab = (providerId?: 'aws' | 'gcp' | 'azure') => {
+    if (providerId) {
+      setSelectedApiProviderId(providerId);
+    }
+    setActiveTab('api-sync');
+  };
+
+  // Apply Live Billing Connection Result from Azure, AWS, or GCP REST API
+  const handleApplyLiveBillingResult = (result: LiveConnectionResult) => {
+    if (!result.ok) return;
+
+    const providerIdMap: Record<'AWS' | 'GCP' | 'Azure', 'aws' | 'gcp' | 'azure'> = {
+      AWS: 'aws',
+      GCP: 'gcp',
+      Azure: 'azure',
+    };
+    const targetId = providerIdMap[result.provider];
+    const nowTime = new Date().toLocaleTimeString();
+    setLastSyncTime(`${nowTime} (${result.provider} Live API)`);
+
+    // 1. Update provider status card & payload viewer
+    setProviders((prev) =>
+      prev.map((p) => {
+        if (p.id === targetId) {
+          return {
+            ...p,
+            isConnected: true,
+            connectionMode: 'live',
+            lastSyncTime: `Live (${nowTime})`,
+            lastLatencyMs: result.latencyMs,
+            lastHttpStatus: result.statusCode,
+            liveTotalSpend: result.totalSpend,
+            liveServicesBreakdown: result.servicesBreakdown,
+            apiEndpoint: result.endpoint || p.apiEndpoint,
+            credentialsMasked: result.credentialsMasked || p.credentialsMasked,
+            totalEventsProcessed: p.totalEventsProcessed + (result.lineItemsCount || 1),
+            recentPayload: result.rawPayload || p.recentPayload,
+          };
+        }
+        return p;
+      })
+    );
+
+    // 2. If live spend > 0, update current Month-to-Date expense record for that cloud provider
+    if (result.totalSpend !== undefined && result.totalSpend > 0) {
+      const liveAmount = Math.round(result.totalSpend);
+      setExpenses((prev) => {
+        if (prev.length === 0) return prev;
+        const updated = [...prev];
+        const latest = { ...updated[updated.length - 1] };
+
+        const updatedAccounts = latest.accounts.map((acc) => {
+          if (acc.provider === result.provider) {
+            return {
+              ...acc,
+              name: `${result.provider} Live Connected Account`,
+              spend: liveAmount,
+            };
+          }
+          return acc;
+        });
+
+        const newTotalSpend = updatedAccounts.reduce((s, a) => s + a.spend, 0);
+        const ratio = latest.totalSpend > 0 ? newTotalSpend / latest.totalSpend : 1;
+
+        latest.accounts = updatedAccounts;
+        latest.totalSpend = newTotalSpend;
+        latest.onDemandSpend = Math.round(latest.onDemandSpend * ratio);
+        latest.reservationSpend = Math.round(latest.reservationSpend * ratio);
+        latest.savingsPlanSpend = Math.round(latest.savingsPlanSpend * ratio);
+        latest.spotSpend = Math.max(
+          0,
+          newTotalSpend - (latest.onDemandSpend + latest.reservationSpend + latest.savingsPlanSpend)
+        );
+
+        if (result.categories) {
+          const catSum =
+            result.categories.compute +
+            result.categories.storage +
+            result.categories.networking +
+            result.categories.database +
+            result.categories.aiMl +
+            result.categories.other;
+          if (catSum > 0) {
+            latest.categories = {
+              compute: Math.round(latest.categories.compute * 0.65 + result.categories.compute),
+              storage: Math.round(latest.categories.storage * 0.65 + result.categories.storage),
+              networking: Math.round(latest.categories.networking * 0.65 + result.categories.networking),
+              database: Math.round(latest.categories.database * 0.65 + result.categories.database),
+              aiMl: Math.round(latest.categories.aiMl * 0.65 + result.categories.aiMl),
+              other: Math.round(latest.categories.other * 0.65 + result.categories.other),
+            };
+          }
+        }
+
+        updated[updated.length - 1] = latest;
+        return updated;
+      });
+    }
+
+    showToast(
+      `🔌 Live ${result.provider} Connected! Pulled ${formatCurrency(
+        result.totalSpend || 0
+      )} MTD across ${result.lineItemsCount || 1} services (${result.latencyMs}ms)`
+    );
   };
 
   // Real-Time Cloud Billing API Sync Handler
@@ -300,7 +410,7 @@ export default function App() {
         providers={providers}
         onTriggerSync={handleTriggerSync}
         isSyncing={isSyncing}
-        onOpenApiTab={() => setActiveTab('api-sync')}
+        onOpenApiTab={handleOpenApiTab}
         lastSyncTimestamp={lastSyncTime}
       />
 
@@ -320,8 +430,8 @@ export default function App() {
             {/* Postrix Dark Navy Hero Panel (.xh-panel) */}
             <section className="xh-panel">
               <div className="xh-kicker">
-                <span className="k">💰📈 CLOUD COST &amp; FINOPS INTELLIGENCE · CURATED BY MANI RAVINDRAN</span>
-                <span className="tag">FinOps Maturity v2.6 · RI / SP / CUD · Real-Time Billing</span>
+                <span className="k">💰📈 MANIQ | SPEND · FINOPS INTELLIGENCE CURATED BY MANI RAVINDRAN</span>
+                <span className="tag">FinOps Maturity v2.6 · Azure / AWS / GCP Live Connectors</span>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-[#C9D3D9]/12">
@@ -342,13 +452,22 @@ export default function App() {
                         >
                           ravindran.in ↗
                         </a>{' '}
-                        · AWS, GCP &amp; Azure · Potential Savings: {formatCurrency(savings.monthly)}/mo
+                        · Azure, AWS &amp; GCP · Potential Savings: {formatCurrency(savings.monthly)}/mo
                       </span>
                     </h1>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenApiTab('azure')}
+                    className="xh-btn cursor-pointer"
+                  >
+                    <PlugZap className="w-3.5 h-3.5 text-[#5FD3BF]" />
+                    <span>Connect Live Azure / AWS / GCP 🔌</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setActiveTab('benchmarks')}
@@ -365,14 +484,6 @@ export default function App() {
                   >
                     <span>View {savings.count} Optimization Areas ({formatCurrency(savings.monthly)}/mo)</span>
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsPremiumModalOpen(true)}
-                    className="xh-btn cursor-pointer"
-                  >
-                    <span>Mani Ravindran Advisory Access 💼</span>
                   </button>
                 </div>
               </div>
@@ -635,10 +746,10 @@ export default function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setActiveTab('api-sync')}
+                    onClick={() => handleOpenApiTab('azure')}
                     className="text-xs font-mono text-emerald-700 hover:underline cursor-pointer"
                   >
-                    Stream Status: Active (3 Clouds)
+                    Configure Live Cloud APIs (Azure · AWS · GCP) →
                   </button>
                 </div>
               </div>
@@ -660,7 +771,7 @@ export default function App() {
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                    Looking to negotiate an AWS EDP or Google Cloud Committed Use Discount? Need tailored Kubernetes cost allocation or automated anomaly response? Connect directly with Mani Ravindran.
+                    Looking to negotiate an AWS EDP, Azure EA commitment, or Google Cloud CUD? Need tailored Kubernetes cost allocation or automated anomaly response? Connect directly with Mani Ravindran.
                   </p>
                   <div className="flex flex-wrap items-center gap-4 text-xs pt-2 font-mono">
                     <a
@@ -734,13 +845,15 @@ export default function App() {
           />
         )}
 
-        {/* Tab 6: Real-Time Cloud Billing APIs */}
+        {/* Tab 6: Real-Time Cloud Billing APIs & Live Connection Studio */}
         {activeTab === 'api-sync' && (
           <ApiIntegrationTab
             providers={providers}
             onTriggerSync={handleTriggerSync}
             isSyncing={isSyncing}
             onUpdateProviderConfig={handleUpdateProviderConfig}
+            onApplyLiveBillingResult={handleApplyLiveBillingResult}
+            initialSelectedProviderId={selectedApiProviderId}
           />
         )}
       </main>
@@ -754,7 +867,7 @@ export default function App() {
             </span>
             <span>
               <strong className="font-serif text-sm font-semibold text-[#F3F5F1]">
-                Maniq <span className="text-[#3E6E86] font-normal">|</span> <span className="text-[#D79A45]">CloudCost IQ</span>
+                Maniq <span className="text-[#3E6E86] font-normal">|</span> <span className="text-[#D79A45]">Spend</span>
               </strong>{' '}
               — Cloud Cost Savings Analyzer &amp; FinOps Benchmarks Platform
             </span>

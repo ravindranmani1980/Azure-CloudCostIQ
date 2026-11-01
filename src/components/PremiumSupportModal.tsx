@@ -42,7 +42,7 @@ export const PremiumSupportModal: React.FC<PremiumSupportModalProps> = ({
   };
 
   const emailSubject = encodeURIComponent(
-    `Maniq | CloudCost IQ Premium Support Request - ${formData.company || 'Enterprise'}`
+    `Maniq | Spend Premium Support Request - ${formData.company || 'Enterprise'}`
   );
   const emailBody = encodeURIComponent(
     `Hello Mani,\n\nI would like to request premium support access for cloud cost optimization.\n\nName: ${formData.fullName}\nEmail: ${formData.email}\nCompany: ${formData.company}\nMonthly Spend: ${formData.monthlySpend}\nClouds: ${formData.cloudProviders.join(', ')}\nFocus: ${formData.interestArea}\n\nDetails: ${formData.message}\n`

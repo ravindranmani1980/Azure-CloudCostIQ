@@ -104,13 +104,40 @@ export interface CloudApiProviderConfig {
   provider: CloudProvider;
   emoji: string;
   isConnected: boolean;
+  connectionMode?: 'live' | 'simulated';
   lastSyncTime: string;
   syncIntervalSeconds: number;
   apiEndpoint: string;
   credentialsMasked: string;
   autoSync: boolean;
   totalEventsProcessed: number;
+  lastLatencyMs?: number;
+  lastHttpStatus?: number;
+  liveTotalSpend?: number;
+  liveServicesBreakdown?: { service: string; spend: number }[];
   recentPayload?: Record<string, unknown>;
+}
+
+export interface LiveConnectionResult {
+  ok: boolean;
+  provider: 'AWS' | 'GCP' | 'Azure';
+  statusCode: number;
+  latencyMs: number;
+  endpoint?: string;
+  credentialsMasked?: string;
+  totalSpend?: number;
+  lineItemsCount?: number;
+  categories?: {
+    compute: number;
+    storage: number;
+    networking: number;
+    database: number;
+    aiMl: number;
+    other: number;
+  };
+  servicesBreakdown?: { service: string; spend: number }[];
+  rawPayload?: Record<string, unknown>;
+  error?: string;
 }
 
 export interface ConsultationRequest {
@@ -122,3 +149,4 @@ export interface ConsultationRequest {
   interestArea: string;
   message: string;
 }
+

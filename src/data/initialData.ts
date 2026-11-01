@@ -433,7 +433,7 @@ export const INITIAL_API_PROVIDERS: CloudApiProviderConfig[] = [
     lastSyncTime: 'Just now (Streaming)',
     syncIntervalSeconds: 30,
     apiEndpoint: 'https://ce.us-east-1.amazonaws.com/v2/GetCostAndUsage',
-    credentialsMasked: 'arn:aws:iam::849204918231:role/CloudCostIQ-ReadOnlyBilling',
+    credentialsMasked: 'arn:aws:iam::849204918231:role/ManiqSpend-ReadOnlyBilling',
     autoSync: true,
     totalEventsProcessed: 14820,
     recentPayload: {
