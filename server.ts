@@ -322,16 +322,23 @@ app.post('/api/cloud/connect', async (req, res) => {
         bearerToken = tokenJson.access_token as string;
       }
 
-      // Query Azure Cost Management REST API
-      const endpoint = `https://management.azure.com/subscriptions/${encodeURIComponent(
-        subscriptionId
-      )}/providers/Microsoft.CostManagement/query?api-version=2023-11-01`;
+      const timeframe = credentials?.timeframe?.trim() || 'MonthToDate';
+      const startDate = credentials?.startDate?.trim() || '';
+      const endDate = credentials?.endDate?.trim() || '';
+      const customEndpoint = credentials?.customEndpoint?.trim() || '';
 
-      const queryBody = {
+      // Query Azure Cost Management REST API
+      const endpoint =
+        customEndpoint ||
+        `https://management.azure.com/subscriptions/${encodeURIComponent(
+          subscriptionId
+        )}/providers/Microsoft.CostManagement/query?api-version=2023-11-01`;
+
+      const queryBody: Record<string, unknown> = {
         type: 'ActualCost',
-        timeframe: 'MonthToDate',
+        timeframe,
         dataset: {
-          granularity: 'None',
+          granularity: credentials?.granularity === 'Daily' ? 'Daily' : 'None',
           aggregation: {
             totalCost: {
               name: 'Cost',
@@ -346,6 +353,13 @@ app.post('/api/cloud/connect', async (req, res) => {
           ],
         },
       };
+
+      if (timeframe === 'Custom' && startDate && endDate) {
+        queryBody.timePeriod = {
+          from: `${startDate}T00:00:00Z`,
+          to: `${endDate}T23:59:59Z`,
+        };
+      }
 
       const costResp = await fetch(endpoint, {
         method: 'POST',
@@ -419,6 +433,9 @@ app.post('/api/cloud/connect', async (req, res) => {
       const secretAccessKey = credentials?.secretAccessKey?.trim() || process.env.AWS_SECRET_ACCESS_KEY || '';
       const sessionToken = credentials?.sessionToken?.trim() || process.env.AWS_SESSION_TOKEN || undefined;
       const region = credentials?.region?.trim() || process.env.AWS_REGION || 'us-east-1';
+      const granularity = (credentials?.granularity?.trim()?.toUpperCase() === 'DAILY' ? 'DAILY' : 'MONTHLY') as 'MONTHLY' | 'DAILY';
+      const costMetric = credentials?.costMetric?.trim() || 'UnblendedCost';
+      const accountId = credentials?.accountId?.trim() || '';
 
       if (!accessKeyId || !secretAccessKey) {
         return res.status(400).json({
@@ -430,13 +447,26 @@ app.post('/api/cloud/connect', async (req, res) => {
         });
       }
 
-      const { start, end } = getCurrentMonthDateRange();
-      const payloadObj = {
+      const defaultRange = getCurrentMonthDateRange();
+      const start = credentials?.startDate?.trim() || defaultRange.start;
+      const end = credentials?.endDate?.trim() || defaultRange.end;
+
+      const payloadObj: Record<string, unknown> = {
         TimePeriod: { Start: start, End: end },
-        Granularity: 'MONTHLY',
-        Metrics: ['UnblendedCost', 'BlendedCost'],
+        Granularity: granularity,
+        Metrics: [costMetric],
         GroupBy: [{ Type: 'DIMENSION', Key: 'SERVICE' }],
       };
+
+      if (accountId) {
+        payloadObj.Filter = {
+          Dimensions: {
+            Key: 'LINKED_ACCOUNT',
+            Values: [accountId],
+          },
+        };
+      }
+
       const payload = JSON.stringify(payloadObj);
       const endpoint = 'https://ce.us-east-1.amazonaws.com/';
 
@@ -476,20 +506,28 @@ app.post('/api/cloud/connect', async (req, res) => {
         });
       }
 
-      const groups: any[] = awsJson?.ResultsByTime?.[0]?.Groups || [];
+      const resultsByTime: any[] = awsJson?.ResultsByTime || [];
       let totalSpend = 0;
       const categories = { compute: 0, storage: 0, networking: 0, database: 0, aiMl: 0, other: 0 };
-      const servicesBreakdown: { service: string; spend: number }[] = [];
+      const serviceTotalsMap: Record<string, number> = {};
 
-      for (const g of groups) {
-        const serviceName = String(g?.Keys?.[0] || 'AWS Service');
-        const amount =
-          parseFloat(g?.Metrics?.UnblendedCost?.Amount || g?.Metrics?.BlendedCost?.Amount || '0') || 0;
-        totalSpend += amount;
-        const cat = categorizeService(serviceName);
-        categories[cat] += amount;
-        servicesBreakdown.push({ service: serviceName, spend: Math.round(amount * 100) / 100 });
+      for (const period of resultsByTime) {
+        const groups: any[] = period?.Groups || [];
+        for (const g of groups) {
+          const serviceName = String(g?.Keys?.[0] || 'AWS Service');
+          const metricObj = g?.Metrics?.[costMetric] || g?.Metrics?.UnblendedCost || g?.Metrics?.BlendedCost;
+          const amount = parseFloat(metricObj?.Amount || '0') || 0;
+          totalSpend += amount;
+          const cat = categorizeService(serviceName);
+          categories[cat] += amount;
+          serviceTotalsMap[serviceName] = (serviceTotalsMap[serviceName] || 0) + amount;
+        }
       }
+
+      const servicesBreakdown = Object.entries(serviceTotalsMap).map(([service, spend]) => ({
+        service,
+        spend: Math.round(spend * 100) / 100,
+      }));
 
       totalSpend = Math.round(totalSpend * 100) / 100;
 
@@ -498,10 +536,10 @@ app.post('/api/cloud/connect', async (req, res) => {
         provider: 'AWS',
         statusCode: awsResp.status,
         latencyMs,
-        endpoint: `${endpoint} (Region: ${region})`,
+        endpoint: `${endpoint} (Region: ${region}${accountId ? ` · Acct: ${accountId}` : ''})`,
         credentialsMasked: `AKIA/ASIA: ${accessKeyId.slice(0, 6)}****${accessKeyId.slice(-2)}`,
         totalSpend,
-        lineItemsCount: groups.length,
+        lineItemsCount: servicesBreakdown.length,
         categories,
         servicesBreakdown: servicesBreakdown.sort((a, b) => b.spend - a.spend).slice(0, 10),
         rawPayload: awsJson,

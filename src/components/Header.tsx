@@ -1,10 +1,11 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, PlugZap } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenPremiumSupport: () => void;
+  onConnectLiveData?: () => void;
   anomalyCount: number;
 }
 
@@ -12,6 +13,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenPremiumSupport,
+  onConnectLiveData,
   anomalyCount,
 }) => {
   const navItems = [
@@ -60,8 +62,18 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Zone 3: Primary Action CTA */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Zone 3: Primary Action CTAs */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {onConnectLiveData && (
+            <button
+              type="button"
+              onClick={onConnectLiveData}
+              className="xh-btn !px-2.5 !py-1.5 sm:!px-3 sm:!py-2 !text-xs whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <PlugZap className="w-3.5 h-3.5 text-[#5FD3BF] shrink-0" />
+              <span>Connect Live Data</span>
+            </button>
+          )}
           <button
             type="button"
             onClick={onOpenPremiumSupport}

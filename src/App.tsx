@@ -8,6 +8,7 @@ import { BenchmarksTab } from './components/BenchmarksTab';
 import { AlertsAnomalyTab } from './components/AlertsAnomalyTab';
 import { ApiIntegrationTab } from './components/ApiIntegrationTab';
 import { PremiumSupportModal } from './components/PremiumSupportModal';
+import { LiveCloudConnectStudio } from './components/LiveCloudConnectStudio';
 
 import {
   INITIAL_MONTHLY_EXPENSES,
@@ -46,6 +47,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [selectedApiProviderId, setSelectedApiProviderId] = useState<'aws' | 'gcp' | 'azure'>('azure');
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState<boolean>(false);
+  const [isLiveConnectModalOpen, setIsLiveConnectModalOpen] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Core FinOps Application State
@@ -126,12 +128,12 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Navigate to Cloud Billing API tab focused on specific provider
+  // Open Live Connect Studio modal when user clicks "Connect Live Data"
   const handleOpenApiTab = (providerId?: 'aws' | 'gcp' | 'azure') => {
     if (providerId) {
       setSelectedApiProviderId(providerId);
     }
-    setActiveTab('api-sync');
+    setIsLiveConnectModalOpen(true);
   };
 
   // Apply Live Billing Connection Result from Azure, AWS, or GCP REST API
@@ -402,6 +404,7 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenPremiumSupport={() => setIsPremiumModalOpen(true)}
+        onConnectLiveData={() => handleOpenApiTab('azure')}
         anomalyCount={activeAlerts.length}
       />
 
@@ -465,7 +468,7 @@ export default function App() {
                     className="xh-btn cursor-pointer"
                   >
                     <PlugZap className="w-3.5 h-3.5 text-[#5FD3BF]" />
-                    <span>Connect Live Azure / AWS / GCP 🔌</span>
+                    <span>Connect Live Data 🔌</span>
                   </button>
 
                   <button
@@ -749,7 +752,7 @@ export default function App() {
                     onClick={() => handleOpenApiTab('azure')}
                     className="text-xs font-mono text-emerald-700 hover:underline cursor-pointer"
                   >
-                    Configure Live Cloud APIs (Azure · AWS · GCP) →
+                    Connect Live Data (Azure · AWS · GCP) →
                   </button>
                 </div>
               </div>
@@ -910,6 +913,24 @@ export default function App() {
         isOpen={isPremiumModalOpen}
         onClose={() => setIsPremiumModalOpen(false)}
       />
+
+      {/* Global Quick-Access Live Cloud Connect Modal */}
+      {isLiveConnectModalOpen && (
+        <div className="fixed inset-0 z-50 bg-[#081420]/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="max-w-5xl w-full my-8">
+            <LiveCloudConnectStudio
+              providers={providers}
+              onApplyLiveBillingResult={(res) => {
+                handleApplyLiveBillingResult(res);
+                setIsLiveConnectModalOpen(false);
+              }}
+              initialProvider={selectedApiProviderId}
+              isModal={true}
+              onClose={() => setIsLiveConnectModalOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -113,10 +113,10 @@ export const LiveBillingSyncBar: React.FC<LiveBillingSyncBarProps> = ({
               type="button"
               onClick={() => onOpenApiTab()}
               className="px-2.5 py-1 text-[11px] font-mono font-semibold rounded border bg-[#102236] border-[#EBC385]/50 text-[#EBC385] hover:border-[#EBC385] hover:bg-[#152C44] transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
-              title="Configure Direct Live Connections to Azure, AWS & GCP"
+              title="Connect Live Data for Azure, AWS & GCP"
             >
               <PlugZap className="w-3.5 h-3.5 text-[#5FD3BF]" />
-              <span>Live Cloud Connect 🔌</span>
+              <span>Connect Live Data 🔌</span>
             </button>
 
             <button
